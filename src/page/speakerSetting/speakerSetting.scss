@@ -1,0 +1,102 @@
+.speakerSetting {
+  background-image: url("../../img/speakerBG.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  .speakerInsert {
+    .eachLine {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      color: white;
+      align-items: center;
+      padding: 20px 25px;
+      .dnsBlock {
+        border: none;
+        border-radius: 45px;
+        font-size: 20px;
+        padding: 20px;
+        background-color: rgb(233, 180, 138);
+        width: 20%;
+        color: white;
+      }
+      .dnsBlock::placeholder {
+        color: white;
+      }
+      .dnsBlock:focus {
+        outline: none;
+      }
+      .settingRoll {
+        border: none;
+        border-radius: 45px;
+        width: 15%;
+        font-size: 20px;
+        padding: 10px;
+        background-color: rgb(233, 180, 138);
+      }
+      .connectCheck {
+        border: none;
+        border-radius: 45px;
+        font-size: 20px;
+        padding: 10px;
+        width: 10%;
+        background-color: rgb(233, 180, 138);
+        color: white;
+        border: none;
+        outline: none;
+        cursor: pointer;
+      }
+      .discardButton {
+        border: none;
+        border-radius: 45px;
+        width: 10%;
+        font-size: 20px;
+        padding: 10px;
+        background-color: rgb(233, 180, 138);
+        color: white;
+        border: none;
+        outline: none;
+        cursor: pointer;
+      }
+    }
+  }
+  .speakerAdd {
+    padding: 25px;
+    .addButton {
+      width: 140px;
+      font-size: 20px;
+      padding: 12.5px;
+      font-family: "Roboto", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-weight: 500;
+      color: white;
+      background-color: rgb(233, 180, 138);
+      border: none;
+      border-radius: 45px;
+      transition: all 0.3s ease 0s;
+      cursor: pointer;
+      outline: none;
+    }
+  }
+
+  .settingConfirm {
+    padding: 25px;
+    .confirmButton {
+      font-size: 20px;
+      padding: 20px;
+      width: 280px;
+      font-family: "Roboto", sans-serif;
+
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-weight: 500;
+      color: white;
+      background-color: #e9b48a;
+      border: none;
+      border-radius: 45px;
+      transition: all 0.3s ease 0s;
+      cursor: pointer;
+      outline: none;
+    }
+  }
+}
