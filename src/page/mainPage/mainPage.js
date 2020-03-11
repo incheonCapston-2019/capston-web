@@ -9,12 +9,16 @@ class MainPage extends Component {
       <div className="mainPage">
         <div className="centerContainer">
           <div className="title">
-            <span className="text"> 너는 나의 친구</span>
+            <div className="text"> 너는 나의 친구</div>
           </div>
           <div>
-            <MpButton className="MpButton" text="대본 저장소" />
-            <MpButton className="MpButton" text="재생 목록" />
-            <Link to="/speakersetting">
+            <Link to="/scriptSave">
+              <MpButton className="MpButton" text="대본 저장소" />
+            </Link>
+            <Link to="/playList">
+              <MpButton className="MpButton" text="재생 목록" />
+            </Link>
+            <Link to="/speakerPage">
               <MpButton className="MpButton" text="스피커 설정" />
             </Link>
           </div>

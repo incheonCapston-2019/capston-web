@@ -4,31 +4,38 @@
   background-repeat: no-repeat;
   .speakerInsert {
     .eachLine {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
+      display: grid;
+      grid-template-columns: 50vw 20vw 10vw;
+
+      justify-content: space-between;
       color: white;
       align-items: center;
       padding: 20px 25px;
-      .dnsBlock {
-        border: none;
-        border-radius: 45px;
-        font-size: 20px;
-        padding: 20px;
-        background-color: rgb(233, 180, 138);
-        width: 20%;
-        color: white;
+      .inputBox {
+        display: flex;
+        flex-direction: column;
+        .dnsBlock {
+          margin-bottom: 5px;
+          border: none;
+          border-radius: 45px;
+          font-size: 20px;
+          padding: 20px;
+          background-color: rgb(233, 180, 138);
+          // width: 20%;
+          color: white;
+        }
+        .dnsBlock::placeholder {
+          color: white;
+        }
+        .dnsBlock:focus {
+          outline: none;
+        }
       }
-      .dnsBlock::placeholder {
-        color: white;
-      }
-      .dnsBlock:focus {
-        outline: none;
-      }
+
       .settingRoll {
         border: none;
         border-radius: 45px;
-        width: 15%;
+        // width: 15%;
         font-size: 20px;
         padding: 10px;
         background-color: rgb(233, 180, 138);
@@ -38,7 +45,7 @@
         border-radius: 45px;
         font-size: 20px;
         padding: 10px;
-        width: 10%;
+        // width: 10%;
         background-color: rgb(233, 180, 138);
         color: white;
         border: none;
@@ -48,7 +55,7 @@
       .discardButton {
         border: none;
         border-radius: 45px;
-        width: 10%;
+        // width: 10%;
         font-size: 20px;
         padding: 10px;
         background-color: rgb(233, 180, 138);
