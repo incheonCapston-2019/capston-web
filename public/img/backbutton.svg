@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17">
+    <defs>
+        <style>
+            .cls-1,.cls-2{fill:none}.cls-3,.cls-4{stroke:none}.cls-4{fill:#3c434f}
+        </style>
+    </defs>
+    <g id="그룹_1376" data-name="그룹 1376" transform="translate(-.148 -.129)">
+        <g id="그룹_332" data-name="그룹 332">
+            <path id="사각형_200" d="M0 0h17v17H0z" class="cls-1" data-name="사각형 200" transform="translate(.148 .129)"/>
+            <g id="빼기_1" class="cls-2" data-name="빼기 1">
+                <path d="M7.721 14.869L0 7.434 7.721 0l1.335 1.285-6.387 6.149 6.387 6.149-1.335 1.286z" class="cls-3" transform="translate(3.949 .719)"/>
+                <path d="M7.721 14.869L0 7.434 7.721 0l1.335 1.285-6.387 6.15 6.387 6.149-1.335 1.285z" class="cls-4" transform="translate(3.949 .719)"/>
+            </g>
+        </g>
+        <path id="사각형_200-2" d="M0 0h17v17H0z" class="cls-1" data-name="사각형 200" transform="translate(.148 .129)"/>
+    </g>
+</svg>

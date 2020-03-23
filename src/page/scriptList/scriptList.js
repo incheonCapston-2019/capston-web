@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./scriptList.scss";
+import "./scriptList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
 class ScriptList extends Component {

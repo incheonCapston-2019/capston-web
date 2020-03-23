@@ -1,17 +1,17 @@
 import React, { Component } from "react";
-import "./playList.scss";
+import "./playList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
 class PlayList extends Component {
   state = {
-    script: ["헨젤과 그랬대", "신 병데렐라"],
+    script: ["헨젤과 그레텔", "신데렐라"],
     castPart: [
       ["철수", "영수", "부희", "승우"],
       ["철구", "영추", "부후", "승아"]
     ],
     speaker: ["스피커1", "스피커2", "스피커3"],
     scriptPlus: false,
-    playList: ["헨젤과 그랬대"]
+    playList: ["헨젤과 그레텔"]
   };
 
   scriptPlus = () => {
@@ -47,7 +47,15 @@ class PlayList extends Component {
           )}
 
           <div className="playListInfo">
-            <div>재생목록</div>
+            <div>
+              <img
+                src="img/backbutton.svg"
+                className="backbutton"
+                alt="backbutton"
+                onClick={() => (window.location.href = "/")}
+              />
+              재생목록
+            </div>
             <div className="playListTopButton">
               <button className="button" onClick={this.scriptPlus}>
                 대본 추가

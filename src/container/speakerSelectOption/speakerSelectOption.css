@@ -1,0 +1,39 @@
+.speakerSelectOption {
+  display: none;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.speakerSelectOption .speakerSelectOption_background {
+  z-index: 2;
+  background-color: #999999;
+  opacity: 0.5;
+  width: 100vw;
+  height: 100vh;
+}
+.speakerSelectOption .speakerSelectOption_main {
+  z-index: 3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 10px;
+  border-radius: 15px;
+  background-color: white;
+  transform: translate(-50%, -50%);
+}
+.speakerSelectOption .speakerSelectOption_main .each {
+  display: grid;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  grid-template-columns: 100px 100px;
+  grid-column-gap: 15px;
+}
+.speakerSelectOption .speakerSelectOption_main .each .name {
+  border-radius: 15px;
+  border: 1px solid #999999;
+}
+.speakerSelectOption .speakerSelectOption_main .saveButton {
+  border-radius: 15px;
+  padding: 5px;
+}

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./mainPage.scss";
+import "./mainPage.css";
 import { MpButton } from "../../component/index";
 import { Link } from "react-router-dom";
 

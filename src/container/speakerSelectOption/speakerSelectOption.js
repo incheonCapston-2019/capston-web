@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./speakerSelectOption.scss";
+import "./speakerSelectOption.css";
 import { SpeakerSelectOption_main } from "../../component";
 import { Link } from "react-router-dom";
 

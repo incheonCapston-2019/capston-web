@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./speakerSetting.scss";
+import "./speakerSetting.css";
 import SpeakerPopup from "../../component/speakerPopup/speakerPopup";
 import { Link } from "react-router-dom";
 
