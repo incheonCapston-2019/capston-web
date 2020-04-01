@@ -21,6 +21,15 @@ class SpeakerPopup extends Component {
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
+  spaekerCheck1 = e => {
+    console.log(this.state.url);
+    Axios({
+      url: "http://127.0.0.1:3001/speakerConnect1/",
+      method: "post"
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
 
   render() {
     return (
@@ -36,7 +45,9 @@ class SpeakerPopup extends Component {
         <button className="connectCheck" onClick={this.spaekerCheck}>
           연결확인
         </button>
-        <button className="discardButton">삭제</button>
+        <button className="discardButton" onClick={this.spaekerCheck1}>
+          삭제
+        </button>
       </div>
     );
   }
