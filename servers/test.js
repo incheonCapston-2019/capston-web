@@ -16,6 +16,7 @@ client = new net.Socket();
 app.post("/speakerConnect", function(req, res, next) {
   client.connect(10000, "121.143.22.128", function() {
     console.log("연결완료");
+    client.setKeepAlive(true);
   });
 
   console.log("req", req.body);
