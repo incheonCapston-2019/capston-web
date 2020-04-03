@@ -1,22 +1,15 @@
-var express = require("express");
 const cors = require("cors");
-var app = express();
+var app = require("express")();
+var server = require("http").createServer(app);
+// http server를 socket.io server로 upgrade한다
+var io = require("socket.io")(server);
 
-var net = require("net");
+// app.use(express.json());
+// app.use(cors());
 
-var client = null;
-
-app.use(express.json());
-app.use(cors());
-
-client = new net.Socket();
-
-//로컬 121.143.22.128
-
+//로컬
+var test = 1;
 app.post("/speakerConnect", function(req, res, next) {
-  client.connect(5000, "127.0.0.1", function() {
-    console.log("연결완료");
-  });
   client.on("connect", function() {
     console.log("connect");
   });
@@ -24,6 +17,7 @@ app.post("/speakerConnect", function(req, res, next) {
   client.write("1 " + req.body.url);
 
   client.on("data", function(data) {
+    console.log(test++);
     console.log("Received:" + data);
 
     client.end();
@@ -39,11 +33,10 @@ app.post("/speakerConnect", function(req, res, next) {
   client.on("end", function() {
     console.log("Connection end");
   });
+
   client.on("close", function() {
     console.log("Connection closed");
-    client.pop();
   });
-  res.send("test");
 });
 
 // app.post("/speakerConnect1", function(req, res, next) {
@@ -60,6 +53,7 @@ app.post("/speakerConnect", function(req, res, next) {
 //     }
 //   });
 // });
-app.listen(3001, () => {
-  console.log("start server");
+
+server.listen(3001, function() {
+  console.log("Server On !");
 });
