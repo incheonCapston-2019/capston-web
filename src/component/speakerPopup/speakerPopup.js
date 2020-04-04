@@ -3,32 +3,33 @@ import Axios from "axios";
 
 class SpeakerPopup extends Component {
   state = {
-    url: ""
+    url: "",
   };
 
-  onChangeUrl = e => {
+  onChangeUrl = (e) => {
     this.setState({ url: e.target.value });
     console.log(e.target.value);
   };
 
-  spaekerCheck = e => {
+  spaekerCheck = (e) => {
     console.log(this.state.url);
     Axios({
       url: "http://127.0.0.1:3001/speakerConnect/",
       method: "post",
-      data: { url: this.state.url }
+      data: { url: this.state.url },
     })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
-  spaekerCheck1 = e => {
+  spaekerCheck1 = (e) => {
     console.log(this.state.url);
     Axios({
       url: "http://127.0.0.1:3001/speakerConnect1/",
-      method: "post"
+      method: "post",
+      data: { data: "이건 삭제 버튼" },
     })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   render() {

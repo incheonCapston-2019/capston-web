@@ -9,57 +9,84 @@ var client = null;
 app.use(express.json());
 app.use(cors());
 
-client = new net.Socket();
+//로컬
 
-//로컬 121.143.22.128
+app.post("/speakerConnect", function (req, res, next) {
+  client = new net.Socket();
+  console.log("스피커 커넥트 연결");
+  console.log("req : ", req.body);
 
-app.post("/speakerConnect", function(req, res, next) {
-  client.connect(5000, "127.0.0.1", function() {
+  client.connect(10000, "121.143.22.128", function () {
     console.log("연결완료");
   });
-  client.on("connect", function() {
+  client.on("connect", function () {
     console.log("connect");
+    client.write("1 " + req.body.url);
   });
-  console.log("req", req.body);
-  client.write("1 " + req.body.url);
 
-  client.on("data", function(data) {
+  client.on("data", function (data) {
     console.log("Received:" + data);
-
+    if (data == "true") {
+      res.send("true");
+    } else {
+      res.send("false");
+    }
     client.end();
   });
-  client.on("timeout", function() {
+  client.on("timeout", function () {
     console.log("소켓 타임아웃");
   });
 
-  client.on("error", function(err) {
+  client.on("error", function (err) {
     console.log(err);
   });
 
-  client.on("end", function() {
+  client.on("end", function () {
     console.log("Connection end");
   });
-  client.on("close", function() {
+  client.on("close", function () {
     console.log("Connection closed");
-    client.pop();
   });
-  res.send("test");
 });
 
-// app.post("/speakerConnect1", function(req, res, next) {
-//   console.log("req", req.body);
+app.post("/speakerConnect1", function (req, res, next) {
+  client = new net.Socket();
+  console.log("스피커 커넥트 연결");
+  console.log("req : ", req.body);
 
-//   client.write("2 이건 버튼 테스트");
+  client.connect(10001, "121.143.22.128", function () {
+    console.log("연결완료");
+  });
+  client.on("connect", function () {
+    console.log("connect");
+    client.write("1 " + req.body.url);
+  });
 
-//   client.on("data", function(data) {
-//     console.log("Received: " + data);
-//     if (data == "") {
-//       console.log("유저에게 보냄");
-//     } else {
-//       console.log("코오딩");
-//     }
-//   });
-// });
+  client.on("data", function (data) {
+    console.log("Received:" + data);
+    if (data == "true") {
+      res.send("true");
+    } else {
+      res.send("false");
+    }
+    client.end();
+  });
+  client.on("timeout", function () {
+    console.log("소켓 타임아웃");
+  });
+
+  client.on("error", function (err) {
+    console.log(err);
+  });
+
+  client.on("end", function () {
+    console.log("Connection end");
+  });
+  client.on("close", function () {
+    console.log("Connection closed");
+  });
+});
+
 app.listen(3001, () => {
   console.log("start server");
 });
