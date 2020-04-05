@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Axios from "axios";
-
 class SpeakerPopup extends Component {
   state = {
     url: "",
@@ -13,20 +12,11 @@ class SpeakerPopup extends Component {
 
   spaekerCheck = (e) => {
     console.log(this.state.url);
+
     Axios({
       url: "http://127.0.0.1:3001/speakerConnect/",
       method: "post",
       data: { url: this.state.url },
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  };
-  spaekerCheck1 = (e) => {
-    console.log(this.state.url);
-    Axios({
-      url: "http://127.0.0.1:3001/speakerConnect1/",
-      method: "post",
-      data: { data: "이건 삭제 버튼" },
     })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));

@@ -3,9 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import Root from "./root.js";
-import socketio from "socket.io-client";
-
-// const socket = socketio.connect("http://localhost:3001");
 ReactDOM.render(<Root />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
