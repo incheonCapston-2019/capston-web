@@ -4,7 +4,7 @@ var server = net.createServer(function (socket) {
   // client로 부터 오는 data를 화면에 출력
   socket.on("data", function (data) {
     console.log("rcv:" + data);
-    socket.write("true");
+    socket.write(data);
   });
   // client와 접속이 끊기는 메시지 출력
   socket.on("close", function () {

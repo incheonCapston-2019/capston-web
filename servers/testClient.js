@@ -1,59 +1,44 @@
+var express = require("express");
 const cors = require("cors");
-var app = require("express")();
-var server = require("http").createServer(app);
-// http server를 socket.io server로 upgrade한다
-var io = require("socket.io")(server);
+var app = express();
+var axios = require("axios");
+var net = require("net");
+var tempRes = null;
+var client = null;
 
-// app.use(express.json());
-// app.use(cors());
+app.use(express.json());
+app.use(cors());
 
+client = new net.Socket({ transports: ["websocket"] });
+client.connect(5000, "127.0.0.1", function () {
+  console.log("연결완료");
+});
 //로컬
-var test = 1;
-app.post("/speakerConnect", function(req, res, next) {
-  client.on("connect", function() {
-    console.log("connect");
-  });
+
+app.post("/speakerConnect", function (req, res, next) {
   console.log("req", req.body);
   client.write("1 " + req.body.url);
-
-  client.on("data", function(data) {
-    console.log(test++);
-    console.log("Received:" + data);
-
-    client.end();
-  });
-  client.on("timeout", function() {
-    console.log("소켓 타임아웃");
-  });
-
-  client.on("error", function(err) {
-    console.log(err);
-  });
-
-  client.on("end", function() {
-    console.log("Connection end");
-  });
-
-  client.on("close", function() {
-    console.log("Connection closed");
-  });
+  tempRes = res;
+});
+client.on("data", function (data) {
+  console.log("Received:" + data);
+  tempRes.send(data);
+});
+client.on("timeout", function () {
+  console.log("소켓 타임아웃");
 });
 
-// app.post("/speakerConnect1", function(req, res, next) {
-//   console.log("req", req.body);
+client.on("error", function (err) {
+  console.log(err);
+});
 
-//   client.write("2 이건 버튼 테스트");
+client.on("close", function () {
+  console.log("Connection closed");
+});
+client.on("end", function () {
+  console.log("end");
+});
 
-//   client.on("data", function(data) {
-//     console.log("Received: " + data);
-//     if (data == "") {
-//       console.log("유저에게 보냄");
-//     } else {
-//       console.log("코오딩");
-//     }
-//   });
-// });
-
-server.listen(3001, function() {
-  console.log("Server On !");
+app.listen(3001, () => {
+  console.log("start server");
 });

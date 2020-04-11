@@ -7,11 +7,11 @@ class PlayList extends Component {
     script: ["헨젤과 그레텔", "신데렐라"],
     castPart: [
       ["철수", "영수", "부희", "승우"],
-      ["철구", "영추", "부후", "승아"]
+      ["철구", "영추", "부후", "승아"],
     ],
     speaker: ["스피커1", "스피커2", "스피커3"],
     scriptPlus: false,
-    playList: ["헨젤과 그레텔"]
+    playList: ["헨젤과 그레텔"],
   };
 
   scriptPlus = () => {
