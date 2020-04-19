@@ -17,8 +17,9 @@ class SpeakerSetting extends Component {
   }
   componentDidMount = () => {
     var array = null;
+    console.log(this.state);
     Axios({
-      url: "http://127.0.0.1:3001/speakerIp/",
+      url: "http://127.0.0.1:3001/speakerIp",
       method: "get",
     })
       .then((res) => {
@@ -40,15 +41,28 @@ class SpeakerSetting extends Component {
     });
     console.log(this.state);
   };
-  deleteSpeaker = (index) => {
+  deleteSpeaker = (index, ip) => {
+    console.log(index);
     var array = this.state.speakerPopup;
     if (array.length == 1) {
       alert("마지막 하나입니다!");
       return 0;
     }
+    //이미 저장된 아이피 칸인 경우 서버에서 제거
+    Axios({
+      url: "http://127.0.0.1:3001/speakerIpDelete",
+      method: "delete",
+      data: { url: ip },
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+
     var indexof = array.indexOf(index);
     array.splice(indexof, 1);
     this.setState({ speakerPopup: array });
+    alert("삭제완료");
   };
   render() {
     return (
@@ -61,13 +75,8 @@ class SpeakerSetting extends Component {
                 key={index}
                 defaultIp={this.state.defaultIp}
                 length={this.state.length}
+                deleteSpeaker={this.deleteSpeaker}
               />
-              <button
-                className="discardButton"
-                onClick={() => this.deleteSpeaker(index)}
-              >
-                삭제
-              </button>
             </div>
           ))}
         </div>

@@ -3,14 +3,23 @@ import Axios from "axios";
 class SpeakerPopup extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       url: "",
     };
   }
-
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.defaultIp !== prevProps.defaultIp) {
+      console.log("업뎃");
+      if (this.props.length > this.props.index) {
+        this.setState({
+          url: this.props.defaultIp[this.props.index],
+        });
+      }
+    }
+  }
   onChangeUrl = (e) => {
     this.setState({ url: e.target.value });
+    console.log(this.state);
   };
 
   spaekerCheck = (e) => {
@@ -21,13 +30,13 @@ class SpeakerPopup extends Component {
     })
       .then((res) => {
         console.log(res);
-        // if (res.data == "실패") {
-        //   alert("연결 실패");
-        // } else if (res.data == "중복") {
-        //   alert("이미 등록된 ip입니다.");
-        // } else {
-        //   alert("연결에 성공하였습니다.");
-        // }
+        if (res.data == "실패") {
+          alert("연결 실패");
+        } else if (res.data == "중복") {
+          alert("이미 등록된 ip입니다.");
+        } else {
+          alert("연결에 성공하였습니다.");
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -39,7 +48,7 @@ class SpeakerPopup extends Component {
           <input
             className="dnsBlock"
             placeholder="DNS 입력칸"
-            onBlur={this.onChangeUrl}
+            onChange={this.onChangeUrl}
             defaultValue={
               this.props.length > this.props.index
                 ? this.props.defaultIp[this.props.index]
@@ -50,6 +59,14 @@ class SpeakerPopup extends Component {
         </div>
         <button className="connectCheck" onClick={this.spaekerCheck}>
           연결확인
+        </button>
+        <button
+          className="discardButton"
+          onClick={() =>
+            this.props.deleteSpeaker(this.props.index, this.state.url)
+          }
+        >
+          삭제
         </button>
       </div>
     );

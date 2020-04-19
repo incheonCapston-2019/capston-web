@@ -28,7 +28,7 @@ fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
 });
 
 //121.143.22.128
-client.connect(10000, "121.143.22.128", function () {
+client.connect(5000, "127.0.0.1", function () {
   console.log("연결완료");
 });
 
@@ -41,6 +41,29 @@ app.get("/speakerIp", function (req, res, next) {
   console.log("실행", ipArray);
   if (ipArray.length >= 3) res.send(ipArray);
   else res.send("blank");
+});
+
+app.delete("/speakerIpDelete", function (req, res, next) {
+  console.log(req.body.url);
+  console.log(ipArray);
+  var toDeleteArray = ipArray.indexOf(req.body.url);
+  if (toDeleteArray != -1) {
+    //저장된 아이피라면
+    ipArray.splice(toDeleteArray, 1);
+    jsonXmlFile.ipList.ip = ipArray;
+    fs.writeFile(
+      __dirname + "/xml/ip.xml",
+      toXML(jsonXmlFile, { header: true }),
+      function (err, data) {
+        if (err) {
+          tempRes.send("실패");
+        } else {
+          console.log("updated!");
+        }
+      }
+    );
+  }
+  res.send("완료");
 });
 
 app.post("/speakerConnect", function (req, res, next) {
@@ -67,6 +90,9 @@ client.on("data", function (data) {
   if (nowPlayType == "speaker") {
     if (data == "true") {
       //ip연결 됨 - 저장
+      console.log("스피커 아이피 저장");
+      ipArray.push(tempReq.body.url);
+      jsonXmlFile.ipList.ip = ipArray;
       fs.writeFile(
         __dirname + "/xml/ip.xml",
         toXML(jsonXmlFile, { header: true }),
@@ -76,8 +102,7 @@ client.on("data", function (data) {
             tempRes.send("실패");
           } else {
             console.log("updated!");
-            ipArray.push(tempReq.body.url);
-            jsonXmlFile.ipList.ip = ipArray;
+
             tempRes.send("저장");
           }
         }
