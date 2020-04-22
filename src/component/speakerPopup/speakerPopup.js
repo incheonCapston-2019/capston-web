@@ -19,7 +19,6 @@ class SpeakerPopup extends Component {
   }
   onChangeUrl = (e) => {
     this.setState({ url: e.target.value });
-    console.log(this.state);
   };
 
   spaekerCheck = (e) => {

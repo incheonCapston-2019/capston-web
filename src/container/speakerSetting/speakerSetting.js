@@ -62,7 +62,7 @@ class SpeakerSetting extends Component {
     var indexof = array.indexOf(index);
     array.splice(indexof, 1);
     this.setState({ speakerPopup: array });
-    alert("삭제완료");
+    alert("삭제 완료");
   };
   render() {
     return (
@@ -88,7 +88,7 @@ class SpeakerSetting extends Component {
         <div className="settingConfirm">
           {" "}
           <Link to="/">
-            <button className="confirmButton">설정 종료</button>
+            <button className="confirmButton">설정 완료</button>
           </Link>
         </div>
       </div>

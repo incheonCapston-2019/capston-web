@@ -63,7 +63,7 @@ app.delete("/speakerIpDelete", function (req, res, next) {
       }
     );
   }
-  res.send("완료");
+  res.send("삭제 완료");
 });
 
 app.post("/speakerConnect", function (req, res, next) {
