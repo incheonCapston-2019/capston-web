@@ -4,9 +4,22 @@ import { SpeakerSelectOption_main } from "../../component";
 import { Link } from "react-router-dom";
 
 class SpeakerSelectOption extends Component {
+  state = {
+    speakerIndex: [],
+  };
   componentDidMount() {
-    console.log(this.props);
+    let speakerIndexArray = [];
+    for (let index = 0; index < this.props.castPart.length; index++) {
+      speakerIndexArray.push("");
+    }
+    this.setState({ speakerIndex: speakerIndexArray });
   }
+
+  speakerIndexChange = (e, i) => {
+    var tempArray = this.state.speakerIndex;
+    tempArray[i] = e.target.value;
+    this.setState({ speakerIndex: tempArray });
+  };
 
   render() {
     return (
@@ -14,26 +27,32 @@ class SpeakerSelectOption extends Component {
         <div className="speakerSelectOption">
           <div
             className="speakerSelectOption_background"
-            onClick={() => this.props.nonActive_speakerSelect(this.props.index)}
+            onClick={this.props.nonActive_speakerSelect}
           />
-
-          <div className="speakerSelectOption_main">
-            {this.props.castPart.map((index, i) => (
-              <SpeakerSelectOption_main
-                speaker={this.props.speaker}
-                castPart={index}
-                key={i}
-              />
-            ))}
-            <div>
-              <button
-                className="saveButton"
-                onClick={() => this.props.save_option(this.props.index)}
-              >
-                설정 완료 / 저장
-              </button>
+          <form name="spekaer">
+            <div className="speakerSelectOption_main">
+              {this.props.castPart.map((i, index) => (
+                <SpeakerSelectOption_main
+                  key={index}
+                  index={index}
+                  speaker={this.props.speaker}
+                  castPart={i}
+                  speakerIndexChange={this.speakerIndexChange}
+                />
+              ))}
+              <div>
+                <button
+                  type="button"
+                  className="saveButton"
+                  onClick={() =>
+                    this.props.save_option(this.props.index, this.state)
+                  }
+                >
+                  설정 완료 / 저장
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     );

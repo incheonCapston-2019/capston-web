@@ -18,6 +18,7 @@ var tempReq = null; //무엇을 하였는가
 var nowSocketPlay = false;
 var nowPlayType = null;
 
+var characterXml = null;
 app.use(express.json());
 app.use(cors());
 fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
@@ -26,7 +27,10 @@ fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
   jsonXmlFile = JSON.parse(xmlFile); //객체화
   ipArray = jsonXmlFile.ipList.ip; //아이피 배열 저장
 });
-
+fs.readFile(__dirname + "/xml/character.xml", "utf8", function (err, data) {
+  //서버 개설 시 파일 읽기
+  characterXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
+});
 //121.143.22.128
 client.connect(5000, "127.0.0.1", function () {
   console.log("연결완료");
@@ -41,6 +45,35 @@ app.get("/speakerIp", function (req, res, next) {
   console.log("실행", ipArray);
   if (ipArray.length >= 3) res.send(ipArray);
   else res.send("blank");
+});
+
+app.get("/scriptListCall", function (req, res, next) {
+  let resData = { ...characterXml, ipArray };
+  res.send(resData);
+});
+app.post("/scriptListSave", function (req, res, next) {
+  var tmpParam2 = req.body.arr.speakerIndex;
+  console.log(req.body.index, tmpParam2);
+  for (let index = 0; index < tmpParam2.length; index++) {
+    tmpParam2[index] = tmpParam2[index].split("스피커")[1];
+  }
+
+  characterXml.scriptList.script[req.body.index].userChoice.title = "1";
+  characterXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
+  console.log(characterXml);
+  fs.writeFile(
+    __dirname + "/xml/character.xml",
+    toXML(characterXml, { header: true }),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        res.send(true);
+      }
+    }
+  );
 });
 
 app.delete("/speakerIpDelete", function (req, res, next) {

@@ -2,31 +2,71 @@ import React, { Component } from "react";
 import "./scriptList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 class ScriptList extends Component {
   state = {
-    script: ["헨젤과 그랬대", "신 병데렐라"],
-    castPart: [
-      ["철수", "영수", "부희", "승우"],
-      ["철구", "영추", "부후", "승아"]
-    ],
-    speaker: ["스피커1", "스피커2", "스피커3"]
+    script: [],
+    castPart: [],
+    speaker: ["스피커1", "스피커2", "스피커3"],
   };
-  active_speakerSelect = index => {
+  componentDidMount = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/scriptListCall/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+        var titleArray = [],
+          castPartArray = [],
+          speakerArray = [],
+          speakerIndexArray = [];
+
+        for (
+          let index = 0;
+          index < res.data.scriptList.script.length;
+          index++
+        ) {
+          titleArray.push(res.data.scriptList.script[index].title);
+          castPartArray.push(res.data.scriptList.script[index].act.char);
+        }
+        for (let index = 0; index < res.data.ipArray.length - 2; index++) {
+          speakerArray.push(`스피커${index + 1}`);
+        }
+
+        this.setState({
+          script: titleArray,
+          castPart: castPartArray,
+          speaker: speakerArray,
+          speakerIndex: speakerIndexArray,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+  active_speakerSelect = (index) => {
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "block";
   };
-  nonActive_speakerSelect = index => {
+  nonActive_speakerSelect = (index) => {
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "none";
   };
-
-  save_option = index => {
+  //대사 저장
+  save_option = (index, arr) => {
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "none";
-    window.location.href = "/scriptSave";
+    Axios({
+      url: "http://127.0.0.1:3001/scriptListSave/",
+      method: "post",
+      data: { index: index, arr: arr },
+    })
+      .then((res) => {
+        console.log(res);
+        window.location.href = "/scriptSave";
+      })
+      .catch((err) => console.log(err));
   };
   render() {
     return (
