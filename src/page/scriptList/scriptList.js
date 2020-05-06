@@ -64,7 +64,7 @@ class ScriptList extends Component {
     })
       .then((res) => {
         console.log(res);
-        window.location.href = "/scriptSave";
+        // window.location.href = "/scriptSave";
       })
       .catch((err) => console.log(err));
   };

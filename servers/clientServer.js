@@ -23,6 +23,7 @@ app.use(express.json());
 app.use(cors());
 fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
+
   xmlFile = xmlParser.toJson(data); //문자열 화
   jsonXmlFile = JSON.parse(xmlFile); //객체화
   ipArray = jsonXmlFile.ipList.ip; //아이피 배열 저장
@@ -30,7 +31,29 @@ fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
 fs.readFile(__dirname + "/xml/character.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
   characterXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
+  console.log(characterXml);
 });
+function OBJtoXML(obj) {
+  var xml = "";
+  for (var prop in obj) {
+    xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
+    if (obj[prop] instanceof Array) {
+      for (var array in obj[prop]) {
+        xml += "<" + prop + ">";
+        xml += OBJtoXML(new Object(obj[prop][array]));
+        xml += "</" + prop + ">";
+      }
+    } else if (typeof obj[prop] == "object") {
+      xml += OBJtoXML(new Object(obj[prop]));
+    } else {
+      xml += obj[prop];
+    }
+    xml += obj[prop] instanceof Array ? "" : "</" + prop + ">";
+  }
+  var xml = xml.replace(/<\/?[0-9]{1,}>/g, "");
+  return xml;
+}
+
 //121.143.22.128
 client.connect(5000, "127.0.0.1", function () {
   console.log("연결완료");
@@ -57,13 +80,13 @@ app.post("/scriptListSave", function (req, res, next) {
   for (let index = 0; index < tmpParam2.length; index++) {
     tmpParam2[index] = tmpParam2[index].split("스피커")[1];
   }
-
+  console.log(characterXml);
   characterXml.scriptList.script[req.body.index].userChoice.title = "1";
   characterXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
-  console.log(characterXml);
+
   fs.writeFile(
     __dirname + "/xml/character.xml",
-    toXML(characterXml, { header: true }),
+    OBJtoXML(characterXml),
     function (err, data) {
       if (err) {
         console.log(err);
@@ -86,7 +109,7 @@ app.delete("/speakerIpDelete", function (req, res, next) {
     jsonXmlFile.ipList.ip = ipArray;
     fs.writeFile(
       __dirname + "/xml/ip.xml",
-      toXML(jsonXmlFile, { header: true }),
+      toXML(jsonXmlFile, { header: true, indent: " " }),
       function (err, data) {
         if (err) {
           tempRes.send("실패");
@@ -106,7 +129,7 @@ app.post("/speakerConnect", function (req, res, next) {
     nowSocketPlay = true;
     if (ipArray.indexOf(req.body.url) == -1) {
       //중복 ip가 아닌경우
-      client.write("1 " + req.body.url);
+      client.write("1_" + req.body.url);
       tempRes = res;
       tempReq = req;
       nowPlayType = "speaker";
@@ -128,14 +151,13 @@ client.on("data", function (data) {
       jsonXmlFile.ipList.ip = ipArray;
       fs.writeFile(
         __dirname + "/xml/ip.xml",
-        toXML(jsonXmlFile, { header: true }),
+        toXML(jsonXmlFile, { header: true, indent: " " }),
         function (err, data) {
           if (err) {
             console.log(err);
             tempRes.send("실패");
           } else {
             console.log("updated!");
-
             tempRes.send("저장");
           }
         }
