@@ -27,7 +27,7 @@ class SpeakerSelectOption extends Component {
         <div className="speakerSelectOption">
           <div
             className="speakerSelectOption_background"
-            onClick={this.props.nonActive_speakerSelect}
+            onClick={() => this.props.nonActive_speakerSelect(this.props.index)}
           />
           <form name="spekaer">
             <div className="speakerSelectOption_main">

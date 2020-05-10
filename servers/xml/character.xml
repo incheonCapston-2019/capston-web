@@ -1,1 +1,40 @@
-<scriptList><script><title>헨젤과 그레텔</title><act><char>헨젤</char><char>그레텔</char><char>마녀</char><char>나레이션</char></act><userChoice><title>1</title><index>1</index><index>2</index><index>1</index><index>2</index></userChoice></script><script><title>신데렐라</title><act><char>신데렐라</char><char>언니1</char><char>언니2</char><char>마녀</char><char>계모</char><char>왕자</char><char>나레이션</char></act><userChoice><title>0</title><index>1</index><index>2</index><index>3</index><index>4</index><index>5</index><index>6</index><index>7</index></userChoice></script></scriptList>
+<scriptList>
+    <script>
+        <title>헨젤과 그레텔</title>
+        <act>
+            <char>헨젤</char>
+            <char>그레텔</char>
+            <char>마녀</char>
+            <char>나레이션</char>
+        </act>
+        <userChoice>
+            <title>1</title>
+            <index>2</index>
+            <index>2</index>
+            <index>2</index>
+            <index>2</index>
+        </userChoice>
+    </script>
+    <script>
+        <title>신데렐라</title>
+        <act>
+            <char>신데렐라</char>
+            <char>언니1</char>
+            <char>언니2</char>
+            <char>마녀</char>
+            <char>계모</char>
+            <char>왕자</char>
+            <char>나레이션</char>
+        </act>
+        <userChoice>
+            <title>0</title>
+            <index>1</index>
+            <index>2</index>
+            <index>1</index>
+            <index>2</index>
+            <index>1</index>
+            <index>2</index>
+            <index>1</index>
+        </userChoice>
+    </script>
+</scriptList>

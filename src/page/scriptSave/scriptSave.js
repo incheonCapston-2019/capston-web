@@ -2,30 +2,96 @@ import React, { Component } from "react";
 import "./scriptSave.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 class ScriptSave extends Component {
   state = {
-    script: ["헨젤과 그레텔", "신데렐라"],
-    castPart: [
-      ["철수", "영수", "부희", "승우"],
-      ["철구", "영추", "부후", "승아"]
-    ],
-    speaker: ["스피커1", "스피커2", "스피커3"]
+    script: [],
+    castPart: [],
+    speaker: ["스피커1", "스피커2", "스피커3"],
+    checkedBox: [],
   };
-  active_speakerSelect = index => {
+  componentDidMount = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/scriptSaveCall/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+        var titleArray = [],
+          castPartArray = [],
+          speakerArray = [],
+          filterArray = [],
+          checkedBoxArray = [];
+        //userChoice == 1 Array choice
+        for (
+          let index = 0;
+          index < res.data.scriptList.script.length;
+          index++
+        ) {
+          if (res.data.scriptList.script[index].userChoice.title == "1") {
+            filterArray.push(res.data.scriptList.script[index]);
+            checkedBoxArray.push(false);
+          }
+        }
+        //filtering Array extract title and char
+        for (let index = 0; index < filterArray.length; index++) {
+          titleArray.push(filterArray[index].title);
+          castPartArray.push(filterArray[index].act.char);
+        }
+        for (let index = 0; index < res.data.ipArray.length - 2; index++) {
+          speakerArray.push(`스피커${index + 1}`);
+        }
+
+        this.setState({
+          script: titleArray,
+          castPart: castPartArray,
+          speaker: speakerArray,
+          checkedBox: checkedBoxArray,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+  active_speakerSelect = (index) => {
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "block";
   };
-  nonActive_speakerSelect = index => {
+  nonActive_speakerSelect = (index) => {
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "none";
   };
 
-  save_option = index => {
+  save_option = (index, arr) => {
+    Axios({
+      url: "http://127.0.0.1:3001/scriptListSave/",
+      method: "post",
+      data: { index: index, arr: arr },
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "none";
+  };
+  switchCheckedBox = (index) => {
+    let temp = this.state.checkedBox;
+    temp[index] = !temp[index];
+    this.setState({ checkedBox: temp });
+  };
+  delete_script = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/scriptListDelete/",
+      method: "delete",
+      data: { checkedBox: this.state.checkedBox },
+    })
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => console.log(err));
   };
   render() {
     return (
@@ -50,29 +116,44 @@ class ScriptSave extends Component {
               onClick={() => (window.location.href = "/")}
             />
             대본 저장소
-            <Link to="/scriptList">
-              <span className="scriptPlus">대본 추가</span>
-            </Link>
           </div>
-          <form>
+          <form name="script_area">
             <div className="script_area">
               {this.state.script.map((index, i, key) => (
                 <div
                   className="each_script"
                   onDoubleClick={() => this.active_speakerSelect(i)}
                   key={i}
+                  index={i}
                 >
-                  <input type="checkbox" name={index} value={index} />
+                  <input
+                    type="checkbox"
+                    name={index}
+                    value={index}
+                    onClick={() => this.switchCheckedBox(i)}
+                  />
                   {index}
                 </div>
               ))}
             </div>
 
             <div className="scriptBottom">
-              <button className="bottomDiv">대본 추가</button>
-              <button className="bottomDiv">대본 삭제</button>
+              <Link to="/scriptList">
+                <button type="button" className="bottomDiv">
+                  대본 추가
+                </button>
+              </Link>
+              <button
+                type="button"
+                className="bottomDiv"
+                onClick={this.delete_script}
+              >
+                대본 삭제
+              </button>
               <Link to="/playList">
-                <button className="bottomDiv">재생 목록 이동</button>
+                <button type="button" className="bottomDiv">
+                  재생 목록 이동
+                </button>
               </Link>
             </div>
           </form>

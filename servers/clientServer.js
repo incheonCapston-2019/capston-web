@@ -74,6 +74,12 @@ app.get("/scriptListCall", function (req, res, next) {
   let resData = { ...characterXml, ipArray };
   res.send(resData);
 });
+app.get("/scriptSaveCall", function (req, res, next) {
+  let temp = characterXml;
+  console.log(temp);
+  let resData = { ...characterXml, ipArray };
+  res.send(resData);
+});
 app.post("/scriptListSave", function (req, res, next) {
   var tmpParam2 = req.body.arr.speakerIndex;
   console.log(req.body.index, tmpParam2);
@@ -98,10 +104,28 @@ app.post("/scriptListSave", function (req, res, next) {
     }
   );
 });
-
+app.delete("/scriptListDelete", function (req, res, next) {
+  console.log(req.body.checkedBox);
+  for (let index = 0; index < req.body.checkedBox.length; index++) {
+    if (req.body.checkedBox[index]) {
+      characterXml.scriptList.script[index].userChoice.title = "0";
+    }
+  }
+  fs.writeFile(
+    __dirname + "/xml/character.xml",
+    OBJtoXML(characterXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        res.send(true);
+      }
+    }
+  );
+});
 app.delete("/speakerIpDelete", function (req, res, next) {
-  console.log(req.body.url);
-  console.log(ipArray);
   var toDeleteArray = ipArray.indexOf(req.body.url);
   if (toDeleteArray != -1) {
     //저장된 아이피라면

@@ -37,7 +37,6 @@ class ScriptList extends Component {
           script: titleArray,
           castPart: castPartArray,
           speaker: speakerArray,
-          speakerIndex: speakerIndexArray,
         });
       })
       .catch((err) => console.log(err));
@@ -48,6 +47,7 @@ class ScriptList extends Component {
     ].style.display = "block";
   };
   nonActive_speakerSelect = (index) => {
+    console.log(index);
     document.getElementsByClassName("speakerSelectOption")[
       index
     ].style.display = "none";
@@ -64,7 +64,7 @@ class ScriptList extends Component {
     })
       .then((res) => {
         console.log(res);
-        // window.location.href = "/scriptSave";
+        window.location.href = "/scriptSave";
       })
       .catch((err) => console.log(err));
   };
