@@ -12,7 +12,7 @@ var jsonXmlFile = null; // xml파일 객체 형
 var ipArray = [];
 var dgram = require("dgram"); //udp
 var socket = dgram.createSocket("udp4"); //udp소켓 생성
-
+var xmlHeader = true;
 var tempRes = null; // 응답받는곳 임시저장소
 var tempReq = null; //무엇을 하였는가
 var nowSocketPlay = false;
@@ -34,7 +34,12 @@ fs.readFile(__dirname + "/xml/character.xml", "utf8", function (err, data) {
   console.log(characterXml);
 });
 function OBJtoXML(obj) {
-  var xml = "";
+  if (xmlHeader) {
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    xmlHeader = !xmlHeader;
+  } else {
+    var xml = "";
+  }
   for (var prop in obj) {
     xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
     if (obj[prop] instanceof Array) {
@@ -96,9 +101,11 @@ app.post("/scriptListSave", function (req, res, next) {
     function (err, data) {
       if (err) {
         console.log(err);
+        xmlHeader = !xmlHeader;
         res.send("실패");
       } else {
         console.log("updated!");
+        xmlHeader = !xmlHeader;
         res.send(true);
       }
     }
@@ -117,9 +124,11 @@ app.delete("/scriptListDelete", function (req, res, next) {
     function (err, data) {
       if (err) {
         console.log(err);
+        xmlHeader = !xmlHeader;
         res.send("실패");
       } else {
         console.log("updated!");
+        xmlHeader = !xmlHeader;
         res.send(true);
       }
     }

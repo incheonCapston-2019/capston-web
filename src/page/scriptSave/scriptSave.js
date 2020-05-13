@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 class ScriptSave extends Component {
   state = {
+    allScript: [],
     script: [],
     castPart: [],
     speaker: ["스피커1", "스피커2", "스피커3"],
@@ -21,8 +22,10 @@ class ScriptSave extends Component {
           castPartArray = [],
           speakerArray = [],
           filterArray = [],
-          checkedBoxArray = [];
+          checkedBoxArray = [],
+          allScriptArray = null;
         //userChoice == 1 Array choice
+        allScriptArray = res.data.scriptList.script;
         for (
           let index = 0;
           index < res.data.scriptList.script.length;
@@ -30,8 +33,9 @@ class ScriptSave extends Component {
         ) {
           if (res.data.scriptList.script[index].userChoice.title == "1") {
             filterArray.push(res.data.scriptList.script[index]);
-            checkedBoxArray.push(false);
           }
+
+          checkedBoxArray.push(false);
         }
         //filtering Array extract title and char
         for (let index = 0; index < filterArray.length; index++) {
@@ -43,6 +47,7 @@ class ScriptSave extends Component {
         }
 
         this.setState({
+          allScript: allScriptArray,
           script: titleArray,
           castPart: castPartArray,
           speaker: speakerArray,
@@ -70,6 +75,7 @@ class ScriptSave extends Component {
     })
       .then((res) => {
         console.log(res);
+        alert("update!");
       })
       .catch((err) => console.log(err));
     document.getElementsByClassName("speakerSelectOption")[
@@ -77,8 +83,16 @@ class ScriptSave extends Component {
     ].style.display = "none";
   };
   switchCheckedBox = (index) => {
+    console.log(this.state.allScript);
+    var scriptIndex = 0;
+    for (let id = 0; id < this.state.allScript.length; id++) {
+      if (index == this.state.allScript[id].title) {
+        scriptIndex = id;
+        break;
+      }
+    }
     let temp = this.state.checkedBox;
-    temp[index] = !temp[index];
+    temp[scriptIndex] = !temp[scriptIndex];
     this.setState({ checkedBox: temp });
   };
   delete_script = () => {
@@ -130,7 +144,7 @@ class ScriptSave extends Component {
                     type="checkbox"
                     name={index}
                     value={index}
-                    onClick={() => this.switchCheckedBox(i)}
+                    onClick={() => this.switchCheckedBox(index)}
                   />
                   {index}
                 </div>
