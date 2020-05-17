@@ -18,7 +18,8 @@ var tempReq = null; //무엇을 하였는가
 var nowSocketPlay = false;
 var nowPlayType = null;
 
-var characterXml = null;
+var rollXml = null;
+var playerListXml = null;
 app.use(express.json());
 app.use(cors());
 fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
@@ -28,10 +29,15 @@ fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
   jsonXmlFile = JSON.parse(xmlFile); //객체화
   ipArray = jsonXmlFile.ipList.ip; //아이피 배열 저장
 });
-fs.readFile(__dirname + "/xml/character.xml", "utf8", function (err, data) {
+fs.readFile(__dirname + "/xml/roll.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
-  characterXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
-  console.log(characterXml);
+  rollXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
+  console.log(rollXml);
+});
+fs.readFile(__dirname + "/xml/playerList.xml", "utf8", function (err, data) {
+  //서버 개설 시 파일 읽기
+  playerListXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
+  console.log(playerListXml.scriptList);
 });
 function OBJtoXML(obj) {
   if (xmlHeader) {
@@ -60,7 +66,7 @@ function OBJtoXML(obj) {
 }
 
 //121.143.22.128
-client.connect(5000, "127.0.0.1", function () {
+client.connect(10000, "127.0.0.1", function () {
   console.log("연결완료");
 });
 
@@ -76,28 +82,54 @@ app.get("/speakerIp", function (req, res, next) {
 });
 
 app.get("/scriptListCall", function (req, res, next) {
-  let resData = { ...characterXml, ipArray };
+  let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
 app.get("/scriptSaveCall", function (req, res, next) {
-  let temp = characterXml;
-  console.log(temp);
-  let resData = { ...characterXml, ipArray };
+  let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
+app.get("/scriptPlayerCall", function (req, res, next) {
+  //재생목록 불러오기
+  res.send(playerListXml);
+});
+
 app.post("/scriptListSave", function (req, res, next) {
   var tmpParam2 = req.body.arr.speakerIndex;
   console.log(req.body.index, tmpParam2);
   for (let index = 0; index < tmpParam2.length; index++) {
     tmpParam2[index] = tmpParam2[index].split("스피커")[1];
   }
-  console.log(characterXml);
-  characterXml.scriptList.script[req.body.index].userChoice.title = "1";
-  characterXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
+  console.log(rollXml);
+  rollXml.scriptList.script[req.body.index].userChoice.title = "1";
+  rollXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
 
+  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
+    err,
+    data
+  ) {
+    if (err) {
+      console.log(err);
+      xmlHeader = !xmlHeader;
+      res.send("실패");
+    } else {
+      console.log("updated!");
+      xmlHeader = !xmlHeader;
+      res.send(true);
+    }
+  });
+});
+app.post("/playerListSave", function (req, res, next) {
+  //재생목록 저장
+  console.log(req.body.data, playerListXml); //배열
+  var tempObject = {
+    title: req.body.data,
+  };
+  //if(playerListXml.scriptList.script.title.)
+  playerListXml.scriptList.script = tempObject;
   fs.writeFile(
-    __dirname + "/xml/character.xml",
-    OBJtoXML(characterXml),
+    __dirname + "/xml/playerList.xml",
+    OBJtoXML(playerListXml),
     function (err, data) {
       if (err) {
         console.log(err);
@@ -108,31 +140,59 @@ app.post("/scriptListSave", function (req, res, next) {
         xmlHeader = !xmlHeader;
         res.send(true);
       }
+      xmlHeader = !xmlHeader;
     }
   );
+});
+app.post("/playListPlay", function (req, res, next) {
+  //재생
+  client.write("2_" + req.body.data);
+  tempRes = res;
+  tempReq = req;
+  nowPlayType = "play";
+});
+app.get("/playListStop", function (req, res, next) {
+  //정지
+  client.write("5");
+  tempRes = res;
+  tempReq = req;
+  nowPlayType = "stop";
+});
+app.get("/playListPause", function (req, res, next) {
+  //일시 정지
+  client.write("3");
+  tempRes = res;
+  tempReq = req;
+  nowPlayType = "pause";
+});
+app.get("/playListRePlay", function (req, res, next) {
+  //다시 재생
+  client.write("4");
+  tempRes = res;
+  tempReq = req;
+  nowPlayType = "rePlay";
 });
 app.delete("/scriptListDelete", function (req, res, next) {
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
-      characterXml.scriptList.script[index].userChoice.title = "0";
+      rollXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(
-    __dirname + "/xml/character.xml",
-    OBJtoXML(characterXml),
-    function (err, data) {
-      if (err) {
-        console.log(err);
-        xmlHeader = !xmlHeader;
-        res.send("실패");
-      } else {
-        console.log("updated!");
-        xmlHeader = !xmlHeader;
-        res.send(true);
-      }
+  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
+    err,
+    data
+  ) {
+    if (err) {
+      console.log(err);
+      xmlHeader = !xmlHeader;
+      res.send("실패");
+    } else {
+      console.log("updated!");
+      xmlHeader = !xmlHeader;
+      res.send(true);
     }
-  );
+  });
 });
 app.delete("/speakerIpDelete", function (req, res, next) {
   var toDeleteArray = ipArray.indexOf(req.body.url);
@@ -199,6 +259,14 @@ client.on("data", function (data) {
       //연결이 안되는 경우
       tempRes.send("실패");
     }
+  } else if (nowPlayType == "play") {
+    tempRes.send("실행중 서버 응답");
+  } else if (nowPlayType == "stop") {
+    tempRes.send("정지 완료");
+  } else if (nowPlayType == "pause") {
+    tempRes.send("일시 정지 완료");
+  } else if (nowPlayType == "rePlay") {
+    tempRes.send("재실행 완료");
   } else {
     console.log("외부실행");
   }

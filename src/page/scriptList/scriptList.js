@@ -52,7 +52,7 @@ class ScriptList extends Component {
       index
     ].style.display = "none";
   };
-  //대사 저장
+  //대본 저장
   save_option = (index, arr) => {
     document.getElementsByClassName("speakerSelectOption")[
       index

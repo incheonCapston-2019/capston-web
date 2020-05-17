@@ -2,22 +2,153 @@ import React, { Component } from "react";
 import "./playList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 class PlayList extends Component {
   state = {
-    script: ["헨젤과 그레텔", "신데렐라"],
-    castPart: [
-      ["철수", "영수", "부희", "승우"],
-      ["철구", "영추", "부후", "승아"],
-    ],
-    speaker: ["스피커1", "스피커2", "스피커3"],
+    script: [],
     scriptPlus: false,
-    playList: ["헨젤과 그레텔"],
+    playList: [],
+    checkBox: [],
+    playTarget: "",
+    isPlay: false,
+    isPause: false,
   };
-
+  componentDidMount = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/scriptSaveCall/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+        var titleArray = [],
+          checkBox = [];
+        for (
+          let index = 0;
+          index < res.data.scriptList.script.length;
+          index++
+        ) {
+          if (res.data.scriptList.script[index].userChoice.title == "1") {
+            titleArray.push(res.data.scriptList.script[index].title);
+            checkBox.push(false);
+          }
+        }
+        this.setState({
+          script: titleArray,
+          checkBox: checkBox,
+        });
+      })
+      .catch((err) => console.log(err));
+    Axios({
+      url: "http://127.0.0.1:3001/scriptPlayerCall/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+        var titleArray = [];
+        if (Object.keys(res.data.scriptList.script.title).length != 0) {
+          if (typeof res.data.scriptList.script.title != "string")
+            this.setState({ playList: res.data.scriptList.script.title });
+          else
+            this.setState({
+              playList: [res.data.scriptList.script.title],
+            });
+        }
+        console.log(this.state);
+      })
+      .catch((err) => console.log(err));
+  };
   scriptPlus = () => {
+    var tempArray = [];
+    if (this.state.scriptPlus == true) {
+      // 추가 팝업 on인 상태
+      for (let index = 0; index < this.state.script.length; index++) {
+        tempArray.push(false);
+      }
+      this.setState({
+        scriptPlus: !this.state.scriptPlus,
+        checkBox: tempArray,
+      });
+    }
     this.setState({ scriptPlus: !this.state.scriptPlus });
   };
-
+  swScript = (index) => {
+    var tempIndex = this.state.checkBox;
+    tempIndex[index] = !tempIndex[index];
+    this.setState({ checkBox: tempIndex });
+  };
+  playerListSave = () => {
+    var requestTitle = [],
+      stateScript = this.state.script,
+      stateCheckBox = this.state.checkBox;
+    for (let index = 0; index < stateScript.length; index++) {
+      if (stateCheckBox[index]) {
+        //체크되어 있으면 전송하고자 하는 대본 목록에 추가
+        requestTitle.push(stateScript[index]);
+      }
+    }
+    Axios({
+      url: "http://127.0.0.1:3001/playerListSave/",
+      method: "post",
+      data: { data: requestTitle },
+    })
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => console.log(err));
+  };
+  checkPlayScript = (e) => {
+    console.log(e.target.value);
+    this.setState({ playTarget: e.target.value });
+  };
+  playScript = () => {
+    console.log(this.state);
+    if (this.state.playTarget != "") {
+      if (!this.state.isPause) {
+        Axios({
+          url: "http://127.0.0.1:3001/playListPlay/",
+          method: "post",
+          data: { data: this.state.playTarget },
+        })
+          .then((res) => {
+            console.log(res);
+            this.setState({ isPlay: true });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        Axios({
+          url: "http://127.0.0.1:3001/playListRePlay/",
+          method: "get",
+        })
+          .then((res) => {
+            console.log(res);
+            this.setState({ isPlay: true, isPause: false });
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  };
+  stopScript = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/playListStop/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+  pauseScript = () => {
+    Axios({
+      url: "http://127.0.0.1:3001/playListPause/",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+        this.setState({ isPlay: false, isPause: true });
+      })
+      .catch((err) => console.log(err));
+  };
   render() {
     return (
       <div>
@@ -32,12 +163,20 @@ class PlayList extends Component {
                       <label className="script_label" htmlFor={`script` + i}>
                         {index}
                       </label>
-                      <input id={`script` + i} type="checkBox" />
+                      <input
+                        id={`script` + i}
+                        type="checkBox"
+                        onChange={() => this.swScript(i)}
+                      />
                     </div>
                   ))}
                   <div className="button">
-                    <button>확인</button>
-                    <button onClick={this.scriptPlus}>취소</button>
+                    <button type="button" onClick={this.playerListSave}>
+                      확인
+                    </button>
+                    <button type="button" onClick={this.scriptPlus}>
+                      취소
+                    </button>
                   </div>
                 </form>
               </div>
@@ -68,7 +207,14 @@ class PlayList extends Component {
           <div className="script_area">
             {this.state.playList.map((index, i, key) => (
               <div className="each_script" key={i}>
-                {index}
+                <label>
+                  <input
+                    type="checkbox"
+                    value={index}
+                    onClick={this.checkPlayScript}
+                  />
+                  {index}
+                </label>
               </div>
             ))}
           </div>
@@ -82,8 +228,27 @@ class PlayList extends Component {
               alt="randomRotate"
             />
             <img src="img/rewind.png" className="bottomImg" alt="rewind" />
-            <img src="img/play.png" className="bottomImg" alt="play" />
-            <img src="img/stop.png" className="bottomImg" alt="stop" />
+            {this.state.isPlay ? (
+              <img
+                src="img/pause.png"
+                className="bottomImg"
+                alt="play"
+                onClick={this.pauseScript}
+              />
+            ) : (
+              <img
+                src="img/play.png"
+                className="bottomImg"
+                alt="play"
+                onClick={this.playScript}
+              />
+            )}
+            <img
+              src="img/stop.png"
+              className="bottomImg"
+              alt="stop"
+              onClick={this.stopScript}
+            />
             <img
               src="img/fastForward.png"
               className="bottomImg"

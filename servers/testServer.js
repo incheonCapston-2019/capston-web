@@ -17,6 +17,6 @@ server.on("error", function (err) {
   console.log("err" + err);
 });
 // Port 5000으로 접속이 가능하도록 대기
-server.listen(5000, function () {
+server.listen(10000, function () {
   console.log("linsteing on 5000..");
 });
