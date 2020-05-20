@@ -160,23 +160,17 @@ app.post("/playListPlay", function (req, res, next) {
 app.get("/playListStop", function (req, res, next) {
   //정지
   client.write("5");
-  tempRes = res;
-  tempReq = req;
-  nowPlayType = "stop";
+  res.send("true");
 });
 app.get("/playListPause", function (req, res, next) {
   //일시 정지
   client.write("3");
-  tempRes = res;
-  tempReq = req;
-  nowPlayType = "pause";
+  res.send("true");
 });
 app.get("/playListRePlay", function (req, res, next) {
   //재실행
   client.write("4");
-  tempRes = res;
-  tempReq = req;
-  nowPlayType = "replay";
+  res.send("true");
 });
 app.delete("/scriptListDelete", function (req, res, next) {
   //대본목록 삭제
@@ -267,16 +261,9 @@ client.on("data", function (data) {
       //연결이 안되는 경우
       tempRes.send("실패");
     }
-  } else if (nowPlayType == "play") {
-    tempRes.send("실행 중 서버 응답");
-  } else if (nowPlayType == "stop") {
-    tempRes.send("정지 완료");
-  } else if (nowPlayType == "pause") {
-    tempRes.send("일시 정지 완료");
-  } else if (nowPlayType == "replay") {
-    tempRes.send("재실행 완료");
   } else if (nowPlaying) {
-    tempRes.send("대본 끝");
+    tempRes.send("재생 끝");
+    nowPlaying = !nowPlaying;
   } else {
     console.log("외부 실행");
   }

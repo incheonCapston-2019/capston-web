@@ -142,13 +142,13 @@ class PlayList extends Component {
   };
   pauseScript = () => {
     console.log("일시정지");
+    this.setState({ isPlay: false, isPause: true });
     Axios({
       url: `${API()}/playListPause`,
       method: "get",
     })
       .then((res) => {
         console.log(res);
-        this.setState({ isPlay: false, isPause: true });
       })
       .catch((err) => console.log(err));
   };
