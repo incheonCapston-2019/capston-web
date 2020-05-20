@@ -21,7 +21,7 @@ var nowPlayType = null;
 var rollXml = null;
 var playerListXml = null;
 app.use(express.json());
-app.use(cors({ origin: "http://127.0.0.1:3000", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
 
@@ -107,9 +107,10 @@ app.post("/scriptListSave", function (req, res, next) {
   rollXml.scriptList.script[req.body.index].userChoice.title = "1";
   rollXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
 
-  fs.writeFile(__dirname + "/xml/roll.xml", 
-OBJtoXML(rollXml), 
-function (err, data) {
+  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
+    err,
+    data
+  ) {
     if (err) {
       console.log(err);
       xmlHeader = !xmlHeader;
