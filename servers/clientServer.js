@@ -17,6 +17,7 @@ var tempRes = null; // 응답받는곳 임시저장소
 var tempReq = null; //무엇을 하였는가
 var nowSocketPlay = false;
 var nowPlayType = null;
+var nowPlaying = false;
 
 var rollXml = null;
 var playerListXml = null;
@@ -151,9 +152,10 @@ app.post("/playerListSave", function (req, res, next) {
 app.post("/playListPlay", function (req, res, next) {
   //재생
   client.write("2_" + req.body.data);
+  res.send("true");
+  nowPlaying = true;
   tempRes = res;
   tempReq = req;
-  nowPlayType = "play";
 });
 app.get("/playListStop", function (req, res, next) {
   //정지
@@ -273,6 +275,8 @@ client.on("data", function (data) {
     tempRes.send("일시 정지 완료");
   } else if (nowPlayType == "replay") {
     tempRes.send("재실행 완료");
+  } else if (nowPlaying) {
+    tempRes.send("대본 끝");
   } else {
     console.log("외부 실행");
   }

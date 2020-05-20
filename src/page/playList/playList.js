@@ -103,9 +103,10 @@ class PlayList extends Component {
     this.setState({ playTarget: e.target.value });
   };
   playScript = () => {
-    console.log(this.state);
+    console.log("실행");
     if (this.state.playTarget != "") {
       if (!this.state.isPause) {
+        this.setState({ isPlay: true, isPause: false });
         Axios({
           url: `${API()}/playListPlay`,
           method: "post",
@@ -123,13 +124,13 @@ class PlayList extends Component {
         })
           .then((res) => {
             console.log(res);
-            this.setState({ isPlay: true, isPause: false });
           })
           .catch((err) => console.log(err));
       }
     }
   };
   stopScript = () => {
+    console.log("정지");
     Axios({
       url: `${API()}/playListStop`,
       method: "get",
@@ -140,6 +141,7 @@ class PlayList extends Component {
       .catch((err) => console.log(err));
   };
   pauseScript = () => {
+    console.log("일시정지");
     Axios({
       url: `${API()}/playListPause`,
       method: "get",
