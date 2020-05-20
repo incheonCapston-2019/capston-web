@@ -3,6 +3,7 @@ import "./scriptSave.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import { API } from "../index";
 class ScriptSave extends Component {
   state = {
     allScript: [],
@@ -13,7 +14,7 @@ class ScriptSave extends Component {
   };
   componentDidMount = () => {
     Axios({
-      url: "http://127.0.0.1:3001/scriptSaveCall/",
+      url: `${API()}/scriptSaveCall`,
       method: "get",
     })
       .then((res) => {
@@ -69,7 +70,7 @@ class ScriptSave extends Component {
 
   save_option = (index, arr) => {
     Axios({
-      url: "http://127.0.0.1:3001/scriptListSave/",
+      url: `${API()}/scriptListSave`,
       method: "post",
       data: { index: index, arr: arr },
     })
@@ -97,7 +98,7 @@ class ScriptSave extends Component {
   };
   delete_script = () => {
     Axios({
-      url: "http://127.0.0.1:3001/scriptListDelete/",
+      url: `${API()}/scriptListDelete`,
       method: "delete",
       data: { checkedBox: this.state.checkedBox },
     })

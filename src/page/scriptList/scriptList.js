@@ -3,6 +3,7 @@ import "./scriptList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import { API } from "../index";
 class ScriptList extends Component {
   state = {
     script: [],
@@ -11,7 +12,7 @@ class ScriptList extends Component {
   };
   componentDidMount = () => {
     Axios({
-      url: "http://127.0.0.1:3001/scriptListCall/",
+      url: `${API()}/scriptListCall`,
       method: "get",
     })
       .then((res) => {
@@ -58,7 +59,7 @@ class ScriptList extends Component {
       index
     ].style.display = "none";
     Axios({
-      url: "http://127.0.0.1:3001/scriptListSave/",
+      url: `${API()}/scriptListSave`,
       method: "post",
       data: { index: index, arr: arr },
     })

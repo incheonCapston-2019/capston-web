@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Axios from "axios";
+import { API } from "../../page/index";
 class SpeakerPopup extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +24,7 @@ class SpeakerPopup extends Component {
 
   spaekerCheck = (e) => {
     Axios({
-      url: "http://127.0.0.1:3001/speakerConnect/",
+      url: `${API()}/speakerConnect`,
       method: "post",
       data: { url: this.state.url },
     })

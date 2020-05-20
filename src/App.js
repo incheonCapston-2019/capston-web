@@ -5,7 +5,7 @@ import {
   SpeakerPage,
   ScriptSave,
   ScriptList,
-  PlayList
+  PlayList,
 } from "./page";
 import { Route } from "react-router-dom";
 

@@ -3,7 +3,7 @@ import "./speakerSetting.css";
 import SpeakerPopup from "../../component/speakerPopup/speakerPopup";
 import { Link } from "react-router-dom";
 import Axios from "axios";
-
+import { API } from "../../page/index";
 class SpeakerSetting extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +19,7 @@ class SpeakerSetting extends Component {
     var array = null;
     console.log(this.state);
     Axios({
-      url: "http://localhost:3001/speakerIp",
+      url: `${API()}/speakerIp`,
       method: "get",
     })
       .then((res) => {
@@ -50,7 +50,7 @@ class SpeakerSetting extends Component {
     }
     //이미 저장된 아이피 칸인 경우 서버에서 제거
     Axios({
-      url: "http://127.0.0.1:3001/speakerIpDelete",
+      url: `${API()}/speakerIpDelete`,
       method: "delete",
       data: { url: ip },
     })

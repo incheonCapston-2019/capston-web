@@ -3,6 +3,7 @@ import "./playList.css";
 import { SpeakerSelectOption } from "../../container";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import { API } from "../index";
 class PlayList extends Component {
   state = {
     script: [],
@@ -15,7 +16,7 @@ class PlayList extends Component {
   };
   componentDidMount = () => {
     Axios({
-      url: "http://127.0.0.1:3001/scriptSaveCall/",
+      url: `${API()}/scriptSaveCall`,
       method: "get",
     })
       .then((res) => {
@@ -39,7 +40,7 @@ class PlayList extends Component {
       })
       .catch((err) => console.log(err));
     Axios({
-      url: "http://127.0.0.1:3001/scriptPlayerCall/",
+      url: `${API()}/scriptPlayerCall`,
       method: "get",
     })
       .then((res) => {
@@ -87,7 +88,7 @@ class PlayList extends Component {
       }
     }
     Axios({
-      url: "http://127.0.0.1:3001/playerListSave/",
+      url: `${API()}/playerListSave`,
       method: "post",
       data: { data: requestTitle },
     })
@@ -106,7 +107,7 @@ class PlayList extends Component {
     if (this.state.playTarget != "") {
       if (!this.state.isPause) {
         Axios({
-          url: "http://127.0.0.1:3001/playListPlay/",
+          url: `${API()}/playListPlay`,
           method: "post",
           data: { data: this.state.playTarget },
         })
@@ -117,7 +118,7 @@ class PlayList extends Component {
           .catch((err) => console.log(err));
       } else {
         Axios({
-          url: "http://127.0.0.1:3001/playListRePlay/",
+          url: `${API()}/playListRePlay`,
           method: "get",
         })
           .then((res) => {
@@ -130,7 +131,7 @@ class PlayList extends Component {
   };
   stopScript = () => {
     Axios({
-      url: "http://127.0.0.1:3001/playListStop/",
+      url: `${API()}/playListStop`,
       method: "get",
     })
       .then((res) => {
@@ -140,7 +141,7 @@ class PlayList extends Component {
   };
   pauseScript = () => {
     Axios({
-      url: "http://127.0.0.1:3001/playListPause/",
+      url: `${API()}/playListPause`,
       method: "get",
     })
       .then((res) => {
