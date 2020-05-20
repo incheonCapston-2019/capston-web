@@ -19,7 +19,7 @@ class SpeakerSetting extends Component {
     var array = null;
     console.log(this.state);
     Axios({
-      url: "http://127.0.0.1:3001/speakerIp",
+      url: "http://localhost:3001/speakerIp",
       method: "get",
     })
       .then((res) => {
