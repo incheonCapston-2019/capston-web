@@ -82,10 +82,12 @@ app.get("/speakerIp", function (req, res, next) {
 });
 
 app.get("/scriptListCall", function (req, res, next) {
+  //대본목록 불러오기
   let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
 app.get("/scriptSaveCall", function (req, res, next) {
+  //대본저장소 불러오기
   let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
@@ -95,6 +97,7 @@ app.get("/scriptPlayerCall", function (req, res, next) {
 });
 
 app.post("/scriptListSave", function (req, res, next) {
+  //대본목록 저장
   var tmpParam2 = req.body.arr.speakerIndex;
   console.log(req.body.index, tmpParam2);
   for (let index = 0; index < tmpParam2.length; index++) {
@@ -170,9 +173,10 @@ app.get("/playListRePlay", function (req, res, next) {
   client.write("4");
   tempRes = res;
   tempReq = req;
-  nowPlayType = "rePlay";
+  nowPlayType = "replay";
 });
 app.delete("/scriptListDelete", function (req, res, next) {
+  //대본목록 삭제
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
@@ -195,9 +199,10 @@ app.delete("/scriptListDelete", function (req, res, next) {
   });
 });
 app.delete("/speakerIpDelete", function (req, res, next) {
+  //스피커 IP 삭제
   var toDeleteArray = ipArray.indexOf(req.body.url);
   if (toDeleteArray != -1) {
-    //저장된 아이피라면
+    //스피커가 저장된 아이피라면
     ipArray.splice(toDeleteArray, 1);
     jsonXmlFile.ipList.ip = ipArray;
     fs.writeFile(
@@ -221,13 +226,13 @@ app.post("/speakerConnect", function (req, res, next) {
   if (!nowSocketPlay) {
     nowSocketPlay = true;
     if (ipArray.indexOf(req.body.url) == -1) {
-      //중복 ip가 아닌경우
+      //중복 ip가 아닌 경우
       client.write("1_" + req.body.url);
       tempRes = res;
       tempReq = req;
       nowPlayType = "speaker";
     } else {
-      //중복된 ip인 경우 캔슬
+      //중복된 ip인 경우 캔슬(무시)
       nowSocketPlay = false;
       res.send("중복");
     }
