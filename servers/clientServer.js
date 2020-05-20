@@ -107,10 +107,9 @@ app.post("/scriptListSave", function (req, res, next) {
   rollXml.scriptList.script[req.body.index].userChoice.title = "1";
   rollXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
 
-  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
-    err,
-    data
-  ) {
+  fs.writeFile(__dirname + "/xml/roll.xml", 
+OBJtoXML(rollXml), 
+function (err, data) {
     if (err) {
       console.log(err);
       xmlHeader = !xmlHeader;
@@ -122,6 +121,7 @@ app.post("/scriptListSave", function (req, res, next) {
     }
   });
 });
+
 app.post("/playerListSave", function (req, res, next) {
   //재생목록 저장
   console.log(req.body.data, playerListXml); //배열
@@ -169,7 +169,7 @@ app.get("/playListPause", function (req, res, next) {
   nowPlayType = "pause";
 });
 app.get("/playListRePlay", function (req, res, next) {
-  //다시 재생
+  //재실행
   client.write("4");
   tempRes = res;
   tempReq = req;
@@ -265,15 +265,15 @@ client.on("data", function (data) {
       tempRes.send("실패");
     }
   } else if (nowPlayType == "play") {
-    tempRes.send("실행중 서버 응답");
+    tempRes.send("실행 중 서버 응답");
   } else if (nowPlayType == "stop") {
     tempRes.send("정지 완료");
   } else if (nowPlayType == "pause") {
     tempRes.send("일시 정지 완료");
-  } else if (nowPlayType == "rePlay") {
+  } else if (nowPlayType == "replay") {
     tempRes.send("재실행 완료");
   } else {
-    console.log("외부실행");
+    console.log("외부 실행");
   }
 
   nowSocketPlay = false;
