@@ -82,10 +82,12 @@ app.get("/speakerIp", function (req, res, next) {
 });
 
 app.get("/scriptListCall", function (req, res, next) {
+  //대본목록 불러오기
   let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
 app.get("/scriptSaveCall", function (req, res, next) {
+  //대본저장소 불러오기
   let resData = { ...rollXml, ipArray };
   res.send(resData);
 });
@@ -95,6 +97,7 @@ app.get("/scriptPlayerCall", function (req, res, next) {
 });
 
 app.post("/scriptListSave", function (req, res, next) {
+  //대본목록 저장
   var tmpParam2 = req.body.arr.speakerIndex;
   console.log(req.body.index, tmpParam2);
   for (let index = 0; index < tmpParam2.length; index++) {
@@ -104,10 +107,9 @@ app.post("/scriptListSave", function (req, res, next) {
   rollXml.scriptList.script[req.body.index].userChoice.title = "1";
   rollXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
 
-  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
-    err,
-    data
-  ) {
+  fs.writeFile(__dirname + "/xml/roll.xml", 
+OBJtoXML(rollXml), 
+function (err, data) {
     if (err) {
       console.log(err);
       xmlHeader = !xmlHeader;
@@ -119,6 +121,7 @@ app.post("/scriptListSave", function (req, res, next) {
     }
   });
 });
+
 app.post("/playerListSave", function (req, res, next) {
   //재생목록 저장
   console.log(req.body.data, playerListXml); //배열
@@ -166,13 +169,14 @@ app.get("/playListPause", function (req, res, next) {
   nowPlayType = "pause";
 });
 app.get("/playListRePlay", function (req, res, next) {
-  //다시 재생
+  //재실행
   client.write("4");
   tempRes = res;
   tempReq = req;
-  nowPlayType = "rePlay";
+  nowPlayType = "replay";
 });
 app.delete("/scriptListDelete", function (req, res, next) {
+  //대본목록 삭제
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
@@ -195,9 +199,10 @@ app.delete("/scriptListDelete", function (req, res, next) {
   });
 });
 app.delete("/speakerIpDelete", function (req, res, next) {
+  //스피커 IP 삭제
   var toDeleteArray = ipArray.indexOf(req.body.url);
   if (toDeleteArray != -1) {
-    //저장된 아이피라면
+    //스피커가 저장된 아이피라면
     ipArray.splice(toDeleteArray, 1);
     jsonXmlFile.ipList.ip = ipArray;
     fs.writeFile(
@@ -221,13 +226,13 @@ app.post("/speakerConnect", function (req, res, next) {
   if (!nowSocketPlay) {
     nowSocketPlay = true;
     if (ipArray.indexOf(req.body.url) == -1) {
-      //중복 ip가 아닌경우
+      //중복 ip가 아닌 경우
       client.write("1_" + req.body.url);
       tempRes = res;
       tempReq = req;
       nowPlayType = "speaker";
     } else {
-      //중복된 ip인 경우 캔슬
+      //중복된 ip인 경우 캔슬(무시)
       nowSocketPlay = false;
       res.send("중복");
     }
@@ -260,15 +265,15 @@ client.on("data", function (data) {
       tempRes.send("실패");
     }
   } else if (nowPlayType == "play") {
-    tempRes.send("실행중 서버 응답");
+    tempRes.send("실행 중 서버 응답");
   } else if (nowPlayType == "stop") {
     tempRes.send("정지 완료");
   } else if (nowPlayType == "pause") {
     tempRes.send("일시 정지 완료");
-  } else if (nowPlayType == "rePlay") {
+  } else if (nowPlayType == "replay") {
     tempRes.send("재실행 완료");
   } else {
-    console.log("외부실행");
+    console.log("외부 실행");
   }
 
   nowSocketPlay = false;
