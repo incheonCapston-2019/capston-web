@@ -1,8 +1,9 @@
 .mainPage {
   height: -webkit-fill-available;
-  background-image: url(../../img/MPback.png);
+  background-image: url(/img/MPback.jpg);
   background-repeat: no-repeat;
   background-size: contain;
+  background-position: center;
 }
 
 .mainPage .centerContainer {
@@ -28,8 +29,8 @@
 .mainPage .centerContainer .MpButton {
   width: 60vw;
   padding: 20px;
-  background-color: rgb(250, 231, 163);
-  color: white;
+  background-color: #ffc078;
+  color: #232323;
   margin: 24px auto;
   font-size: 20px;
   border-radius: 25px;
