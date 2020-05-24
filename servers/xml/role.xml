@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <scriptList>
     <script>
         <title>헨젤과 그레텔</title>
@@ -9,9 +10,9 @@
         </act>
         <userChoice>
             <title>1</title>
-            <index>2</index>
             <index>1</index>
-            <index>2</index>
+            <index>1</index>
+            <index>1</index>
             <index>1</index>
         </userChoice>
     </script>
@@ -28,13 +29,13 @@
         </act>
         <userChoice>
             <title>1</title>
-            <index>2</index>
-            <index>1</index>
-            <index>1</index>
-            <index>1</index>
             <index>1</index>
             <index>2</index>
             <index>1</index>
+            <index>2</index>
+            <index>2</index>
+            <index>2</index>
+            <index>2</index>
         </userChoice>
     </script>
 </scriptList>

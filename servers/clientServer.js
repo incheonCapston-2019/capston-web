@@ -4,7 +4,8 @@ var app = express();
 var net = require("net");
 var fs = require("fs");
 var xmlParser = require("xml2json");
-const { toXML } = require("jstoxml");
+var xml2js = require("xml2js");
+var builder = new xml2js.Builder();
 var client = new net.Socket();
 
 var xmlFile = null; //xml파일 문자열 형
@@ -19,7 +20,7 @@ var nowSocketPlay = false;
 var nowPlayType = null;
 var nowPlaying = false;
 
-var rollXml = null;
+var roleXml = null;
 var playerListXml = null;
 app.use(express.json());
 app.use(cors());
@@ -30,41 +31,16 @@ fs.readFile(__dirname + "/xml/ip.xml", "utf8", function (err, data) {
   jsonXmlFile = JSON.parse(xmlFile); //객체화
   ipArray = jsonXmlFile.ipList.ip; //아이피 배열 저장
 });
-fs.readFile(__dirname + "/xml/roll.xml", "utf8", function (err, data) {
+fs.readFile(__dirname + "/xml/role.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
-  rollXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
-  console.log(rollXml);
+  roleXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
+  console.log(roleXml);
 });
 fs.readFile(__dirname + "/xml/playerList.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
   playerListXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
   console.log(playerListXml.scriptList);
 });
-function OBJtoXML(obj) {
-  if (xmlHeader) {
-    var xml = '<?xml version="1.0" encoding="UTF-8"?>';
-    xmlHeader = !xmlHeader;
-  } else {
-    var xml = "";
-  }
-  for (var prop in obj) {
-    xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
-    if (obj[prop] instanceof Array) {
-      for (var array in obj[prop]) {
-        xml += "<" + prop + ">";
-        xml += OBJtoXML(new Object(obj[prop][array]));
-        xml += "</" + prop + ">";
-      }
-    } else if (typeof obj[prop] == "object") {
-      xml += OBJtoXML(new Object(obj[prop]));
-    } else {
-      xml += obj[prop];
-    }
-    xml += obj[prop] instanceof Array ? "" : "</" + prop + ">";
-  }
-  var xml = xml.replace(/<\/?[0-9]{1,}>/g, "");
-  return xml;
-}
 
 //121.143.22.128
 client.connect(10000, "127.0.0.1", function () {
@@ -84,12 +60,12 @@ app.get("/speakerIp", function (req, res, next) {
 
 app.get("/scriptListCall", function (req, res, next) {
   //대본목록 불러오기
-  let resData = { ...rollXml, ipArray };
+  let resData = { ...roleXml, ipArray };
   res.send(resData);
 });
 app.get("/scriptSaveCall", function (req, res, next) {
   //대본저장소 불러오기
-  let resData = { ...rollXml, ipArray };
+  let resData = { ...roleXml, ipArray };
   res.send(resData);
 });
 app.get("/scriptPlayerCall", function (req, res, next) {
@@ -104,24 +80,25 @@ app.post("/scriptListSave", function (req, res, next) {
   for (let index = 0; index < tmpParam2.length; index++) {
     tmpParam2[index] = tmpParam2[index].split("스피커")[1];
   }
-  console.log(rollXml);
-  rollXml.scriptList.script[req.body.index].userChoice.title = "1";
-  rollXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
+  console.log(roleXml);
+  roleXml.scriptList.script[req.body.index].userChoice.title = "1";
+  roleXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
 
-  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
-    err,
-    data
-  ) {
-    if (err) {
-      console.log(err);
-      xmlHeader = !xmlHeader;
-      res.send("실패");
-    } else {
-      console.log("updated!");
-      xmlHeader = !xmlHeader;
-      res.send(true);
+  fs.writeFile(
+    __dirname + "/xml/role.xml",
+    builder.buildObject(roleXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        xmlHeader = !xmlHeader;
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        xmlHeader = !xmlHeader;
+        res.send(true);
+      }
     }
-  });
+  );
 });
 
 app.post("/playerListSave", function (req, res, next) {
@@ -134,7 +111,7 @@ app.post("/playerListSave", function (req, res, next) {
   playerListXml.scriptList.script = tempObject;
   fs.writeFile(
     __dirname + "/xml/playerList.xml",
-    OBJtoXML(playerListXml),
+    builder.buildObject(playerListXml),
     function (err, data) {
       if (err) {
         console.log(err);
@@ -182,46 +159,48 @@ app.delete("/playListDelete", function (req, res, next) {
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
-      rollXml.scriptList.script[index].userChoice.title = "0";
+      roleXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
-    err,
-    data
-  ) {
-    if (err) {
-      console.log(err);
-      xmlHeader = !xmlHeader;
-      res.send("실패");
-    } else {
-      console.log("updated!");
-      xmlHeader = !xmlHeader;
-      res.send(true);
+  fs.writeFile(
+    __dirname + "/xml/role.xml",
+    builder.buildObject(roleXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        xmlHeader = !xmlHeader;
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        xmlHeader = !xmlHeader;
+        res.send(true);
+      }
     }
-  });
+  );
 });
 app.delete("/scriptListDelete", function (req, res, next) {
   //대본목록 설정 삭제
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
-      rollXml.scriptList.script[index].userChoice.title = "0";
+      roleXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(__dirname + "/xml/roll.xml", OBJtoXML(rollXml), function (
-    err,
-    data
-  ) {
-    if (err) {
-      console.log(err);
-      xmlHeader = !xmlHeader;
-      res.send("실패");
-    } else {
-      console.log("updated!");
-      xmlHeader = !xmlHeader;
-      res.send(true);
+  fs.writeFile(
+    __dirname + "/xml/role.xml",
+    builder.buildObject(roleXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        xmlHeader = !xmlHeader;
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        xmlHeader = !xmlHeader;
+        res.send(true);
+      }
     }
-  });
+  );
 });
 app.delete("/speakerIpDelete", function (req, res, next) {
   //스피커 IP 삭제
@@ -232,7 +211,7 @@ app.delete("/speakerIpDelete", function (req, res, next) {
     jsonXmlFile.ipList.ip = ipArray;
     fs.writeFile(
       __dirname + "/xml/ip.xml",
-      toXML(jsonXmlFile, { header: true, indent: " " }),
+      builder.buildObject(jsonXmlFile),
       function (err, data) {
         if (err) {
           tempRes.send("실패");
@@ -274,7 +253,7 @@ client.on("data", function (data) {
       jsonXmlFile.ipList.ip = ipArray;
       fs.writeFile(
         __dirname + "/xml/ip.xml",
-        toXML(jsonXmlFile, { header: true, indent: " " }),
+        builder.buildObject(jsonXmlFile),
         function (err, data) {
           if (err) {
             console.log(err);
