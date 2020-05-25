@@ -129,7 +129,6 @@ app.post("/playerListSave", function (req, res, next) {
 app.post("/playListPlay", function (req, res, next) {
   //재생
   client.write("2_" + req.body.data);
-  res.send("true");
   nowPlaying = true;
   tempRes = res;
   tempReq = req;
