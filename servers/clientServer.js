@@ -215,6 +215,7 @@ app.delete("/speakerIpDelete", function (req, res, next) {
         if (err) {
           tempRes.send("실패");
         } else {
+          tempRes.send("update");
           console.log("updated!");
         }
       }
