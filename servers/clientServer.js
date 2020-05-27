@@ -150,12 +150,12 @@ app.get("/playListRePlay", function (req, res, next) {
   res.send("true");
 });
 app.get("/playListprevJump", function (req, res, next) {
-  //건너뛰기
+  //이전 건너뛰기
   client.write("6");
   res.send("true");
 });
 app.get("/playListnextJump", function (req, res, next) {
-  //건너뛰기
+  //이후 건너뛰기
   client.write("7");
   res.send("true");
 });
