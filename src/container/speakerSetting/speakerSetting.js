@@ -68,8 +68,8 @@ class SpeakerSetting extends Component {
     return (
       <div className="speakerSetting">
         <div className="speakerInsert" id="speakerInsert">
-          {this.state.speakerPopup.map((index) => (
-            <div>
+          {this.state.speakerPopup.map((index, i) => (
+            <div key={i}>
               <SpeakerPopup
                 index={index}
                 key={index}

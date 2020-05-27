@@ -128,8 +128,9 @@ app.post("/playerListSave", function (req, res, next) {
 });
 app.post("/playListPlay", function (req, res, next) {
   //재생
+  nowPlayType = "play";
   client.write("2_" + req.body.data);
-  res.send("true");
+
   nowPlaying = true;
   tempRes = res;
   tempReq = req;
@@ -214,17 +215,17 @@ app.delete("/speakerIpDelete", function (req, res, next) {
       builder.buildObject(jsonXmlFile),
       function (err, data) {
         if (err) {
-          tempRes.send("실패");
+          res.send("실패");
         } else {
-          console.log("updated!");
+          res.send("삭제 완료");
         }
       }
     );
   }
-  res.send("삭제 완료");
 });
 
 app.post("/speakerConnect", function (req, res, next) {
+  //스피커 ip저장
   console.log("req : ", req.body);
   console.log(ipArray);
   if (!nowSocketPlay) {
