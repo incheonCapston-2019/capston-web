@@ -4,6 +4,6 @@ import ScriptSave from "./scriptSave/scriptSave";
 import ScriptList from "./scriptList/scriptList";
 import PlayList from "./playList/playList";
 const API = () => {
-  return "http://localhost:3001";
+  return "http://121.143.22.128:3001";
 };
 export { MainPage, SpeakerPage, ScriptSave, ScriptList, PlayList, API };
