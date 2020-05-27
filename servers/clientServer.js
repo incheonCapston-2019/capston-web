@@ -149,13 +149,18 @@ app.get("/playListRePlay", function (req, res, next) {
   client.write("4");
   res.send("true");
 });
-app.get("/playListJump", function (req, res, next) {
+app.get("/playListprevJump", function (req, res, next) {
   //건너뛰기
   client.write("6");
   res.send("true");
 });
+app.get("/playListnextJump", function (req, res, next) {
+  //건너뛰기
+  client.write("7");
+  res.send("true");
+});
 app.delete("/playListDelete", function (req, res, next) {
-  //대본목록 삭제
+  //재생목록 삭제
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
@@ -179,6 +184,30 @@ app.delete("/playListDelete", function (req, res, next) {
   );
 });
 app.delete("/scriptListDelete", function (req, res, next) {
+  //대본목록 삭제
+  console.log(req.body.checkedBox);
+  for (let index = 0; index < req.body.checkedBox.length; index++) {
+    if (req.body.checkedBox[index]) {
+      roleXml.scriptList.script[index].userChoice.title = "0";
+    }
+  }
+  fs.writeFile(
+    __dirname + "/xml/role.xml",
+    builder.buildObject(roleXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        xmlHeader = !xmlHeader;
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        xmlHeader = !xmlHeader;
+        res.send(true);
+      }
+    }
+  );
+});
+app.delete("/scriptListsetDelete", function (req, res, next) {
   //대본목록 설정 삭제
   console.log(req.body.checkedBox);
   for (let index = 0; index < req.body.checkedBox.length; index++) {
