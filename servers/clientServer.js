@@ -130,10 +130,6 @@ app.post("/playListPlay", function (req, res, next) {
   //재생
   nowPlayType = "play";
   client.write("2_" + req.body.data);
-<<<<<<< HEAD
-
-=======
->>>>>>> master
   nowPlaying = true;
   tempRes = res;
   tempReq = req;
@@ -220,12 +216,7 @@ app.delete("/speakerIpDelete", function (req, res, next) {
         if (err) {
           res.send("실패");
         } else {
-<<<<<<< HEAD
           res.send("삭제 완료");
-=======
-          tempRes.send("update");
-          console.log("updated!");
->>>>>>> master
         }
       }
     );
