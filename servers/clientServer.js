@@ -39,19 +39,19 @@ fs.readFile(__dirname + "/xml/role.xml", "utf8", function (err, data) {
 fs.readFile(__dirname + "/xml/playerList.xml", "utf8", function (err, data) {
   //서버 개설 시 파일 읽기
   playerListXml = JSON.parse(xmlParser.toJson(data)); //문자열 및 객체화
-  console.log(playerListXml.scriptList);
+  console.log(playerListXml.scriptList.script);
 });
 
 //121.143.22.128
-client.connect(10000, "127.0.0.1", function () {
+client.connect(10000, "127.0.0.1", function (res, req, next) {
   console.log("연결완료");
 });
 
 client.on("connect", function () {
   console.log("connect");
 });
+//req.socket.setKeepAlive();
 
-//로컬
 app.get("/speakerIp", function (req, res, next) {
   console.log("실행", ipArray);
   if (ipArray.length >= 3) res.send(ipArray);
@@ -104,27 +104,57 @@ app.post("/scriptListSave", function (req, res, next) {
 app.post("/playerListSave", function (req, res, next) {
   //재생목록 저장
   console.log(req.body.data, playerListXml); //배열
-  var tempObject = {
-    title: req.body.data,
-  };
-  //if(playerListXml.scriptList.script.title.)
-  playerListXml.scriptList.script = tempObject;
-  fs.writeFile(
-    __dirname + "/xml/playerList.xml",
-    builder.buildObject(playerListXml),
-    function (err, data) {
-      if (err) {
-        console.log(err);
-        xmlHeader = !xmlHeader;
-        res.send("실패");
-      } else {
-        console.log("updated!");
-        xmlHeader = !xmlHeader;
-        res.send(true);
+  if (Array.isArray(req.body.data)) {
+    //넘어온게 배열이면
+    for (let index = 0; index < req.body.data.length; index++) {
+      if (
+        playerListXml.scriptList.script.title.indexOf(req.body.data[index]) ==
+        -1
+      ) {
+        //플레이리스트에 없는 경우
+        playerListXml.scriptList.script.title.push(req.body.data[index]);
       }
-      xmlHeader = !xmlHeader;
     }
-  );
+    fs.writeFile(
+      __dirname + "/xml/playerList.xml",
+      builder.buildObject(playerListXml),
+      function (err, data) {
+        if (err) {
+          console.log(err);
+          xmlHeader = !xmlHeader;
+          res.send("실패");
+        } else {
+          console.log("updated!");
+          xmlHeader = !xmlHeader;
+          res.send(true);
+        }
+        xmlHeader = !xmlHeader;
+      }
+    );
+  } else {
+    if (playerListXml.scriptList.script.title.indexOf(req.body.data) == -1) {
+      //넘어온게 배열이 아니면 플레이리스트에 없는 경우
+      playerListXml.scriptList.script.title.push(req.body.data);
+      fs.writeFile(
+        __dirname + "/xml/playerList.xml",
+        builder.buildObject(playerListXml),
+        function (err, data) {
+          if (err) {
+            console.log(err);
+            xmlHeader = !xmlHeader;
+            res.send("실패");
+          } else {
+            console.log("updated!");
+            xmlHeader = !xmlHeader;
+            res.send(true);
+          }
+          xmlHeader = !xmlHeader;
+        }
+      );
+    } else {
+      res.send("중복");
+    }
+  }
 });
 app.post("/playListPlay", function (req, res, next) {
   //재생
