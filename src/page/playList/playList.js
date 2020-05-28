@@ -153,6 +153,30 @@ class PlayList extends Component {
       })
       .catch((err) => console.log(err));
   };
+  prevScript = () => {
+    console.log("이전 한줄 건너뛰기");
+    this.setState({ isPlay: false, isPause: true });
+    Axios({
+      url: `${API()}/playListprevJump`,
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+  nextScript = () => {
+    console.log("이후 한줄 건너뛰기");
+    this.setState({ isPlay: false, isPause: true });
+    Axios({
+      url: `${API()}/playListnextJump`,
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
   render() {
     return (
       <div>
@@ -231,7 +255,12 @@ class PlayList extends Component {
               className="bottomImg"
               alt="randomRotate"
             />
-            <img src="img/rewind.png" className="bottomImg" alt="rewind" />
+            <img
+              src="img/rewind.png"
+              className="bottomImg"
+              alt="rewind"
+              onClick={this.prevScript}
+            />
             {this.state.isPlay ? (
               <img
                 src="img/pause.png"
@@ -257,6 +286,7 @@ class PlayList extends Component {
               src="img/fastForward.png"
               className="bottomImg"
               alt="fastForward"
+              onClick={this.nextScript}
             />
           </div>
         </div>

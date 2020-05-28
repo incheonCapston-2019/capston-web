@@ -72,7 +72,10 @@ app.get("/scriptPlayerCall", function (req, res, next) {
   //재생목록 불러오기
   res.send(playerListXml);
 });
-
+app.get("/speakerKill", function (req, res, next) {
+  client.write("100");
+  res.send("요청완료");
+});
 app.post("/scriptListSave", function (req, res, next) {
   //대본목록 저장
   var tmpParam2 = req.body.arr.speakerIndex;
