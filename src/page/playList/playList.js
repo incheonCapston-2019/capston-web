@@ -136,6 +136,7 @@ class PlayList extends Component {
             this.setState({ isPlay: false, isPause: true });
           })
           .catch((err) => console.log(err));
+        this.setState({ isPlay: true, isPause: false });
       } else {
         alert("한 대본만 실행 가능합니다!");
       }
