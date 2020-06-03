@@ -133,7 +133,7 @@ class PlayList extends Component {
           .then((res) => {
             console.log(res);
             console.log("았싸 대본끝났다.");
-            this.setState({ isPlay: false, isPause: true });
+            this.setState({ isPlay: false, isPause: false });
           })
           .catch((err) => console.log(err));
         this.setState({ isPlay: true, isPause: false });
