@@ -227,10 +227,11 @@ app.delete("/playListDelete", function (req, res, next) {
   console.log(req.body.data, playerListXml); //배열
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
+      playerListXml.scriptList.script.title.indexOf(req.body.data[index]) = "-1";
       roleXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(
+  fs.unlink(
     __dirname + "/xml/playerList.xml",
     builder.buildObject(playerXml),
     function (err, data) {
@@ -239,7 +240,7 @@ app.delete("/playListDelete", function (req, res, next) {
         xmlHeader = !xmlHeader;
         res.send("실패");
       } else {
-        console.log("updated!");
+        console.log("file deleted");
         xmlHeader = !xmlHeader;
         res.send(true);
       }
@@ -253,10 +254,11 @@ app.delete("/scriptListDelete", function (req, res, next) {
   console.log(req.body.data, roleXml); //배열
   for (let index = 0; index < req.body.checkedBox.length; index++) {
     if (req.body.checkedBox[index]) {
+      roleXml.scriptList.script.title.indexOf(req.body.data[index]) = "-1";
       roleXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(
+  fs.unlink(
     __dirname + "/xml/role.xml",
     builder.buildObject(roleXml),
     function (err, data) {
@@ -265,7 +267,7 @@ app.delete("/scriptListDelete", function (req, res, next) {
         xmlHeader = !xmlHeader;
         res.send("실패");
       } else {
-        console.log("updated!");
+        console.log("file deleted");
         xmlHeader = !xmlHeader;
         res.send(true);
       }
@@ -281,7 +283,7 @@ app.delete("/scriptListsetDelete", function (req, res, next) {
       roleXml.scriptList.script[index].userChoice.title = "0";
     }
   }
-  fs.writeFile(
+  fs.writefile(
     __dirname + "/xml/role.xml",
     builder.buildObject(roleXml),
     function (err, data) {
@@ -290,7 +292,7 @@ app.delete("/scriptListsetDelete", function (req, res, next) {
         xmlHeader = !xmlHeader;
         res.send("실패");
       } else {
-        console.log("updated!");
+       console.log("setting deleted");
         xmlHeader = !xmlHeader;
         res.send(true);
       }
