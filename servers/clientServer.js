@@ -81,7 +81,7 @@ app.post("/scriptListSave", function (req, res, next) {
   var tmpParam2 = req.body.arr.speakerIndex;
   console.log(req.body.index, tmpParam2);
   for (let index = 0; index < tmpParam2.length; index++) {
-    tmpParam2[index] = tmpParam2[index].split("스피커")[1];
+    tmpParam2[index] = tmpParam2[index].split("스피커")[1] - 1;
   }
   console.log(roleXml);
   roleXml.scriptList.script[req.body.index].userChoice.title = "1";

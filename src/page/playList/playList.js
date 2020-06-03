@@ -11,8 +11,8 @@ class PlayList extends Component {
     playList: [],
     checkBox: [],
     playTarget: "",
-    isPlay: false,
-    isPause: false,
+    isPlay: false, //실행중인가요?
+    isPause: false, //일시정지 중 인가요?
   };
   componentDidMount = () => {
     Axios({
@@ -113,6 +113,8 @@ class PlayList extends Component {
         })
           .then((res) => {
             console.log(res);
+            console.log("았싸 대본끝났다.");
+            this.setState({ isPlay: false, isPause: true });
           })
           .catch((err) => console.log(err));
       } else {
@@ -155,7 +157,6 @@ class PlayList extends Component {
   };
   prevScript = () => {
     console.log("이전 한줄 건너뛰기");
-    this.setState({ isPlay: false, isPause: true });
     Axios({
       url: `${API()}/playListprevJump`,
       method: "get",
@@ -167,7 +168,6 @@ class PlayList extends Component {
   };
   nextScript = () => {
     console.log("이후 한줄 건너뛰기");
-    this.setState({ isPlay: false, isPause: true });
     Axios({
       url: `${API()}/playListnextJump`,
       method: "get",
