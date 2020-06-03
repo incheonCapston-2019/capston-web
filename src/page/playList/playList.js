@@ -10,7 +10,7 @@ class PlayList extends Component {
     scriptPlus: false,
     playList: [],
     checkBox: [],
-    playTarget: "",
+    playTarget: [],
     isPlay: false, //실행중인가요?
     isPause: false, //일시정지 중 인가요?
   };
@@ -98,18 +98,37 @@ class PlayList extends Component {
       })
       .catch((err) => console.log(err));
   };
+  playerListDelete = () => {
+    Axios({
+      url: `${API()}/playerListDelete`,
+      method: "delete",
+      data: { data: this.state.playTarget },
+    })
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => console.log(err));
+  };
   checkPlayScript = (e) => {
-    console.log(e.target.value);
-    this.setState({ playTarget: e.target.value });
+    var tempPlay = this.state.playTarget;
+    if (e.target.checked) {
+      tempPlay.push(e.target.value);
+      this.setState({ playTarget: tempPlay });
+    } else {
+      tempPlay.splice(tempPlay.indexOf(e.target.value), 1);
+      this.setState({ playTarget: tempPlay });
+    }
+    console.log(this.state.playTarget);
   };
   playScript = () => {
-    if (this.state.playTarget != "") {
-      if (!this.state.isPause) {
+    if (!this.state.isPause) {
+      if (this.state.playTarget.length == 1) {
         console.log("실행");
         Axios({
           url: `${API()}/playListPlay`,
           method: "post",
-          data: { data: this.state.playTarget },
+          data: { data: this.state.playTarget[0] },
         })
           .then((res) => {
             console.log(res);
@@ -118,16 +137,18 @@ class PlayList extends Component {
           })
           .catch((err) => console.log(err));
       } else {
-        console.log("재실행");
-        Axios({
-          url: `${API()}/playListRePlay`,
-          method: "get",
-        })
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => console.log(err));
+        alert("한 대본만 실행 가능합니다!");
       }
+    } else {
+      console.log("재실행");
+      Axios({
+        url: `${API()}/playListRePlay`,
+        method: "get",
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
       this.setState({ isPlay: true, isPause: false });
     }
   };
@@ -193,7 +214,7 @@ class PlayList extends Component {
                       </label>
                       <input
                         id={`script` + i}
-                        type="checkBox"
+                        type="checkbox"
                         onChange={() => this.swScript(i)}
                       />
                     </div>
@@ -227,24 +248,28 @@ class PlayList extends Component {
               <button className="button" onClick={this.scriptPlus}>
                 대본 추가
               </button>
-              <button className="button">대본 삭제</button>
+              <button className="button" onClick={this.playerListDelete}>
+                대본 삭제
+              </button>
               <button className="button">대본 순서 변경</button>
             </div>
           </div>
 
           <div className="script_area">
-            {this.state.playList.map((index, i, key) => (
-              <div className="each_script" key={i}>
-                <label>
-                  <input
-                    type="checkbox"
-                    value={index}
-                    onClick={this.checkPlayScript}
-                  />
-                  {index}
-                </label>
-              </div>
-            ))}
+            <form name="playList_script">
+              {this.state.playList.map((index, i, key) => (
+                <div className="each_script" key={i}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={index}
+                      onClick={this.checkPlayScript}
+                    />
+                    {index}
+                  </label>
+                </div>
+              ))}
+            </form>
           </div>
 
           <div className="scriptBottom">
