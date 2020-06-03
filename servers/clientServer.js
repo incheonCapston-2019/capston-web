@@ -78,56 +78,30 @@ app.get("/speakerKill", function (req, res, next) {
 });
 app.post("/scriptListSave", function (req, res, next) {
   //대본목록 저장
-  console.log(req.body.data, roleXml); //배열
-  if (Array.isArray(req.body.data)) {
-    //넘어온게 배열이면
-    for (let index = 0; index < req.body.data.length; index++) {
-      if (roleXml.scriptList.script.title.indexOf(req.body.data[index]) == -1) {
-        //대본리스트에 없는 경우
-        roleXml.scriptList.script.title.push(req.body.data[index]);
-      }
-    }
-
-    fs.writeFile(
-      __dirname + "/xml/role.xml",
-      builder.buildObject(roleXml),
-      function (err, data) {
-        if (err) {
-          console.log(err);
-          xmlHeader = !xmlHeader;
-          res.send("실패");
-        } else {
-          console.log("updated!");
-          xmlHeader = !xmlHeader;
-          res.send(true);
-        }
-        xmlHeader = !xmlHeader;
-      }
-    );
-  } else {
-    if (roleXml.scriptList.script.title.indexOf(req.body.data) == -1) {
-      //넘어온게 배열이 아니면 대본 리스트에 없는 경우
-      roleXml.scriptList.script.title.push(req.body.data);
-      fs.writeFile(
-        __dirname + "/xml/role.xml",
-        builder.buildObject(roleXml),
-        function (err, data) {
-          if (err) {
-            console.log(err);
-            xmlHeader = !xmlHeader;
-            res.send("실패");
-          } else {
-            console.log("updated!");
-            xmlHeader = !xmlHeader;
-            res.send(true);
-          }
-          xmlHeader = !xmlHeader;
-        }
-      );
-    } else {
-      res.send("중복");
-    }
+  var tmpParam2 = req.body.arr.speakerIndex;
+  console.log(req.body.index, tmpParam2);
+  for (let index = 0; index < tmpParam2.length; index++) {
+    tmpParam2[index] = tmpParam2[index].split("스피커")[1] - 1;
   }
+  console.log(roleXml);
+  roleXml.scriptList.script[req.body.index].userChoice.title = "1";
+  roleXml.scriptList.script[req.body.index].userChoice.index = tmpParam2;
+
+  fs.writeFile(
+    __dirname + "/xml/role.xml",
+    builder.buildObject(roleXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        xmlHeader = !xmlHeader;
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        xmlHeader = !xmlHeader;
+        res.send(true);
+      }
+    }
+  );
 });
 
 app.post("/playerListSave", function (req, res, next) {

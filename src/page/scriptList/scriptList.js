@@ -55,20 +55,26 @@ class ScriptList extends Component {
   };
   //대본 저장
   save_option = (index, arr) => {
-    document.getElementsByClassName("speakerSelectOption")[
-      index
-    ].style.display = "none";
-    Axios({
-      url: `${API()}/scriptListSave`,
-      method: "post",
-      data: { index: index, arr: arr },
-    })
-      .then((res) => {
-        console.log(res);
-        window.location.href = "/scriptSave";
+    if (arr.speakerIndex.indexOf("") == -1) {
+      //만약 공백이 없다면
+      Axios({
+        url: `${API()}/scriptListSave`,
+        method: "post",
+        data: { index: index, arr: arr },
       })
-      .catch((err) => console.log(err));
+        .then((res) => {
+          console.log(res);
+          alert("update!");
+        })
+        .catch((err) => console.log(err));
+      document.getElementsByClassName("speakerSelectOption")[
+        index
+      ].style.display = "none";
+    } else {
+      alert("모든 역할에 대해 설정해 주셔야 합니다.");
+    }
   };
+
   render() {
     return (
       <div>

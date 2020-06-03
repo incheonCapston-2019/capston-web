@@ -10,8 +10,8 @@
     </act>
     <userChoice>
       <title>1</title>
-      <index>0</index>
       <index>1</index>
+      <index>0</index>
       <index>1</index>
       <index>0</index>
     </userChoice>
@@ -28,8 +28,8 @@
       <title>1</title>
       <index>0</index>
       <index>1</index>
-      <index>1</index>
       <index>0</index>
+      <index>1</index>
     </userChoice>
   </script>
   <script>
@@ -42,10 +42,10 @@
     </act>
     <userChoice>
       <title>1</title>
-      <index>1</index>
+      <index>0</index>
       <index>1</index>
       <index>0</index>
-      <index>0</index>
+      <index>1</index>
     </userChoice>
   </script>
   <script>

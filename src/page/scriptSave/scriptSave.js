@@ -69,19 +69,26 @@ class ScriptSave extends Component {
   };
 
   save_option = (index, arr) => {
-    Axios({
-      url: `${API()}/scriptListSave`,
-      method: "post",
-      data: { index: index, arr: arr },
-    })
-      .then((res) => {
-        console.log(res);
-        alert("update!");
+    console.log(index, arr);
+    console.log();
+    if (arr.speakerIndex.indexOf("") == -1) {
+      //만약 공백이 없다면
+      Axios({
+        url: `${API()}/scriptListSave`,
+        method: "post",
+        data: { index: index, arr: arr },
       })
-      .catch((err) => console.log(err));
-    document.getElementsByClassName("speakerSelectOption")[
-      index
-    ].style.display = "none";
+        .then((res) => {
+          console.log(res);
+          alert("update!");
+        })
+        .catch((err) => console.log(err));
+      document.getElementsByClassName("speakerSelectOption")[
+        index
+      ].style.display = "none";
+    } else {
+      alert("모든 역할에 대해 설정해 주셔야 합니다.");
+    }
   };
   switchCheckedBox = (index) => {
     console.log(this.state.allScript);
