@@ -134,6 +134,7 @@ class PlayList extends Component {
             console.log(res);
             console.log("았싸 대본끝났다.");
             this.setState({ isPlay: false, isPause: false });
+            console.log("상태변경");
           })
           .catch((err) => console.log(err));
         this.setState({ isPlay: true, isPause: false });
