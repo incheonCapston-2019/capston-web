@@ -216,7 +216,6 @@ app.delete("/playerListDelete", function (req, res, next) {
         xmlHeader = !xmlHeader;
         res.send(true);
       }
-      xmlHeader = !xmlHeader;
     }
   );
 });
