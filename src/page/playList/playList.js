@@ -11,6 +11,8 @@ class PlayList extends Component {
     playList: [],
     checkBox: [],
     playTarget: [],
+    nowPlay: "",
+    setRotate: false,
     isPlay: false, //실행중인가요?
     isPause: false, //일시정지 중 인가요?
   };
@@ -125,20 +127,41 @@ class PlayList extends Component {
     if (!this.state.isPause) {
       if (this.state.playTarget.length == 1) {
         console.log("실행");
+        this.setState({ nowPlay: this.state.playTarget[0] });
+        //현재 실행중인 대본 저장
         Axios({
           url: `${API()}/playListPlay`,
           method: "post",
           data: { data: this.state.playTarget[0] },
         })
-          .then((res) => {
+          .then(async (res) => {
             console.log(res);
             console.log("았싸 대본끝났다.");
             this.setState({ isPlay: false, isPause: false });
             console.log("상태변경");
+            if (this.state.setRotate) {
+              //대본 종료 후 다음 대본 자동 실행
+              var nextplayIndex =
+                this.state.playList.indexOf(this.state.nowPlay) + 1; //몇번째 대본인지
+              if (nextplayIndex == this.state.playList.length)
+                nextplayIndex = 0;
+              else if (this.state.nowPlay == "") return 0;
+
+              await this.setState({
+                playTarget: [this.state.playList[nextplayIndex]],
+              });
+              console.log(this.state.playTarget, nextplayIndex);
+              this.playScript();
+            } else {
+              this.setState({ nowPlay: "" });
+            }
           })
           .catch((err) => console.log(err));
         this.setState({ isPlay: true, isPause: false });
+      } else if (this.state.playTarget.length == 0) {
+        alert("대본을 선택해 주십시오!");
       } else {
+        console.log(this.state.playTarget.length);
         alert("한 대본만 실행 가능합니다!");
       }
     } else {
@@ -156,7 +179,12 @@ class PlayList extends Component {
   };
   stopScript = () => {
     console.log("정지");
-    this.setState({ isPlay: false, isPause: false });
+    this.setState({
+      isPlay: false,
+      isPause: false,
+      nowPlay: "",
+      playTarget: [],
+    });
     Axios({
       url: `${API()}/playListStop`,
       method: "get",
@@ -200,6 +228,23 @@ class PlayList extends Component {
       })
       .catch((err) => console.log(err));
   };
+  randomScript = async () => {
+    if (!this.state.isPlay && !this.state.isPause) {
+      var randomCount = Math.random();
+      randomCount = Math.floor(randomCount * this.state.playList.length);
+      var playTarget = [this.state.playList[randomCount]];
+      await this.setState({ playTarget: playTarget });
+      console.log("랜덤 대본 실행", playTarget);
+      this.playScript();
+    } else {
+      alert("대본 실행 중 또는 일시정지 중에는 랜덤 재생이 불가합니다.");
+    }
+  };
+  setRotate = async () => {
+    await this.setState({ setRotate: !this.state.setRotate });
+    if (this.state.setRotate) alert("반복합니다.");
+    else alert("반복하지 않습니다.");
+  };
   render() {
     return (
       <div>
@@ -210,16 +255,16 @@ class PlayList extends Component {
               <div className="script_area">
                 <form>
                   {this.state.script.map((index, i) => (
-                    <div className="script_name" key={i}>
-                      <label className="script_label" htmlFor={`script` + i}>
+                    <label className="script_label" htmlFor={`script` + i}>
+                      <div className="script_name" key={i}>
                         {index}
-                      </label>
-                      <input
-                        id={`script` + i}
-                        type="checkbox"
-                        onChange={() => this.swScript(i)}
-                      />
-                    </div>
+                        <input
+                          id={`script` + i}
+                          type="checkbox"
+                          onChange={() => this.swScript(i)}
+                        />
+                      </div>
+                    </label>
                   ))}
                   <div className="button">
                     <button type="button" onClick={this.playerListSave}>
@@ -258,29 +303,38 @@ class PlayList extends Component {
           </div>
 
           <div className="script_area">
-            <form name="playList_script">
+            <form className="playList_script" name="playList_script">
               {this.state.playList.map((index, i, key) => (
-                <div className="each_script" key={i}>
-                  <label>
+                <label key={i}>
+                  <div className="each_script">
                     <input
+                      className="checkbox"
                       type="checkbox"
                       value={index}
                       onClick={this.checkPlayScript}
                     />
                     {index}
-                  </label>
-                </div>
+                  </div>
+                </label>
               ))}
             </form>
           </div>
-
+          <div className="bottomPlayBar">
+            현재 실행중인 대본 : {this.state.nowPlay}
+          </div>
           <div className="scriptBottom">
             <img src="img/speaker.png" className="bottomImg" alt="speaker" />
-            <img src="img/rotate.png" className="bottomImg" alt="rotate" />
+            <img
+              src="img/rotate.png"
+              className="bottomImg"
+              alt="rotate"
+              onClick={this.setRotate}
+            />
             <img
               src="img/randomRotate.png"
               className="bottomImg"
               alt="randomRotate"
+              onClick={this.randomScript}
             />
             <img
               src="img/rewind.png"
