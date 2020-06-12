@@ -15,6 +15,7 @@ class PlayList extends Component {
     setRotate: false,
     isPlay: false, //실행중인가요?
     isPause: false, //일시정지 중 인가요?
+    isRandom: false, //랜덤실행인가요?
   };
   componentDidMount = () => {
     Axios({
@@ -123,11 +124,16 @@ class PlayList extends Component {
     }
     console.log(this.state.playTarget);
   };
-  playScript = () => {
+  playScript = async () => {
+    for (let index = 0; index < this.state.playList.length; index++)
+      document.getElementsByClassName("checkbox")[index].checked = false;
     if (!this.state.isPause) {
+      //일시정지 중?
       if (this.state.playTarget.length == 1) {
         console.log("실행");
-        this.setState({ nowPlay: this.state.playTarget[0] });
+        await this.setState({
+          nowPlay: this.state.playTarget[0],
+        });
         //현재 실행중인 대본 저장
         Axios({
           url: `${API()}/playListPlay`,
@@ -141,19 +147,47 @@ class PlayList extends Component {
             console.log("상태변경");
             if (this.state.setRotate) {
               //대본 종료 후 다음 대본 자동 실행
-              var nextplayIndex =
-                this.state.playList.indexOf(this.state.nowPlay) + 1; //몇번째 대본인지
-              if (nextplayIndex == this.state.playList.length)
-                nextplayIndex = 0;
-              else if (this.state.nowPlay == "") return 0;
+              if (this.state.isRandom) {
+                //대본 자동 실행할때 랜덤인 경우
+                var randomCount = Math.random();
+                randomCount = Math.floor(
+                  randomCount * this.state.playList.length
+                );
+                var playTarget = [this.state.playList[randomCount]];
+                while (playTarget[0] == this.state.nowPlay) {
+                  //랜덤 타겟과 현재 실행중이던 타겟이 같다면 다시 반복
+                  randomCount = Math.random();
+                  randomCount = Math.floor(
+                    randomCount * this.state.playList.length
+                  );
+                  playTarget = [this.state.playList[randomCount]];
+                }
+                console.log(playTarget[0]);
+                await this.setState({
+                  playTarget: playTarget,
+                  nowPlay: playTarget[0],
+                });
+                console.log("랜덤 대본 실행", playTarget);
+              } else {
+                //대본 자동 실행할때 랜덤이 아닌 경우
+                var nextplayIndex =
+                  this.state.playList.indexOf(this.state.nowPlay) + 1; //몇번째 대본인지
+                if (nextplayIndex == this.state.playList.length)
+                  nextplayIndex = 0;
+                else if (this.state.nowPlay == "") return 0;
 
-              await this.setState({
-                playTarget: [this.state.playList[nextplayIndex]],
-              });
-              console.log(this.state.playTarget, nextplayIndex);
+                await this.setState({
+                  playTarget: [this.state.playList[nextplayIndex]],
+                });
+              }
+              console.log(this.state.playTarget);
               this.playScript();
             } else {
-              this.setState({ nowPlay: "" });
+              this.setState({ nowPlay: "", playTarget: [] });
+              for (let index = 0; index < this.state.playList.length; index++)
+                document.getElementsByClassName("checkbox")[
+                  index
+                ].checked = false;
             }
           })
           .catch((err) => console.log(err));
@@ -179,6 +213,8 @@ class PlayList extends Component {
   };
   stopScript = () => {
     console.log("정지");
+    for (let index = 0; index < this.state.playList.length; index++)
+      document.getElementsByClassName("checkbox")[index].checked = false;
     this.setState({
       isPlay: false,
       isPause: false,
@@ -229,16 +265,10 @@ class PlayList extends Component {
       .catch((err) => console.log(err));
   };
   randomScript = async () => {
-    if (!this.state.isPlay && !this.state.isPause) {
-      var randomCount = Math.random();
-      randomCount = Math.floor(randomCount * this.state.playList.length);
-      var playTarget = [this.state.playList[randomCount]];
-      await this.setState({ playTarget: playTarget });
-      console.log("랜덤 대본 실행", playTarget);
-      this.playScript();
-    } else {
-      alert("대본 실행 중 또는 일시정지 중에는 랜덤 재생이 불가합니다.");
-    }
+    await this.setState({ isRandom: !this.state.isRandom });
+    if (this.state.isRandom) {
+      alert("다음 대본을 랜덤으로 실행 합니다.");
+    } else alert("랜덤 실행을 하지 않습니다.");
   };
   setRotate = async () => {
     await this.setState({ setRotate: !this.state.setRotate });
