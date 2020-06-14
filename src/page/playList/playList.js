@@ -6,9 +6,9 @@ import Axios from "axios";
 import { API } from "../index";
 class PlayList extends Component {
   state = {
-    script: [],
+    script: [], //대본 목록
     scriptPlus: false,
-    playList: [],
+    playList: [], //재생 목록
     checkBox: [],
     playTarget: [],
     nowPlay: "",
@@ -16,6 +16,8 @@ class PlayList extends Component {
     isPlay: false, //실행중인가요?
     isPause: false, //일시정지 중 인가요?
     isRandom: false, //랜덤실행인가요?
+    isRevise: false, //대본 순서 변경인가요?
+    reviseScript: [],
   };
   componentDidMount = () => {
     Axios({
@@ -125,6 +127,10 @@ class PlayList extends Component {
     console.log(this.state.playTarget);
   };
   playScript = async () => {
+    if (this.state.isRevise) {
+      alert("대본 순서 설정 중에는 재생이 불가합니다");
+      return 0;
+    }
     for (let index = 0; index < this.state.playList.length; index++)
       document.getElementsByClassName("checkbox")[index].checked = false;
     if (!this.state.isPause) {
@@ -275,6 +281,48 @@ class PlayList extends Component {
     if (this.state.setRotate) alert("반복합니다.");
     else alert("반복하지 않습니다.");
   };
+  setRevise = async () => {
+    if (this.state.isPlay) {
+      alert("대본 재생 중에는 설정 불가 합니다.");
+      return 0;
+    }
+    await this.setState({ isRevise: !this.state.isRevise });
+    if (!this.state.isRevise) {
+      //서버에 저장
+      if (this.state.reviseScript.length == this.state.playList.length) {
+        Axios({
+          url: `${API()}/playListRevise`,
+          method: "put",
+          data: { data: this.state.reviseScript },
+        })
+          .then((res) => {
+            console.log(res);
+            console.log("설정 완료");
+            window.location.reload();
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert("모든 대본의 순서를 설정해주시지 않으면 저장이 되지 않습니다.");
+      }
+    }
+  };
+
+  reviseScriptSave = async (e) => {
+    let tempReviseScript = this.state.reviseScript;
+    if (tempReviseScript.indexOf(e.target.name) == -1) {
+      //순서를 안정한 대본인 경우
+      console.log(e.target.name, tempReviseScript);
+      tempReviseScript.push(e.target.name);
+      console.log(tempReviseScript);
+      await this.setState({ reviseScript: tempReviseScript });
+      console.log("대본 번호 추가", tempReviseScript);
+    } else {
+      //순서를 정한 대본인 경우
+      tempReviseScript.splice(tempReviseScript.indexOf(e.target.name), 1);
+      await this.setState({ reviseScript: tempReviseScript });
+      console.log(this.state.reviseScript);
+    }
+  };
   render() {
     return (
       <div>
@@ -328,19 +376,38 @@ class PlayList extends Component {
               <button className="button" onClick={this.playerListDelete}>
                 대본 삭제
               </button>
-              <button className="button">대본 순서 변경</button>
+              <button className="button" onClick={this.setRevise}>
+                대본 순서 변경
+              </button>
             </div>
           </div>
 
           <div className="script_area">
             <form className="playList_script" name="playList_script">
               {this.state.playList.map((index, i, key) => (
-                <label key={i}>
+                <label key={i} htmlFor={index}>
                   <div className="each_script">
+                    {this.state.isRevise ? (
+                      <input
+                        type="text"
+                        onClick={this.reviseScriptSave}
+                        value={
+                          this.state.reviseScript.indexOf(index) != -1
+                            ? this.state.reviseScript.indexOf(index) + 1
+                            : "선택"
+                        }
+                        className="reviseIndex"
+                        name={index}
+                        readOnly
+                      />
+                    ) : (
+                      <div />
+                    )}
                     <input
                       className="checkbox"
                       type="checkbox"
                       value={index}
+                      id={index}
                       onClick={this.checkPlayScript}
                     />
                     {index}

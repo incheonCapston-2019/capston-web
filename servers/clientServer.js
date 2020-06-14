@@ -159,6 +159,24 @@ app.post("/playerListSave", function (req, res, next) {
     }
   }
 });
+app.put("/playListRevise", function (req, res, next) {
+  //재생 목록 수정
+  console.log(req.body.data);
+  playerListXml.scriptList.script.title = req.body.data;
+  fs.writeFile(
+    __dirname + "/xml/playerList.xml",
+    builder.buildObject(playerListXml),
+    function (err, data) {
+      if (err) {
+        console.log(err);
+        res.send("실패");
+      } else {
+        console.log("updated!");
+        res.send(true);
+      }
+    }
+  );
+});
 app.post("/playListPlay", function (req, res, next) {
   //재생
   nowPlayType = "play";
@@ -192,6 +210,7 @@ app.get("/playListnextJump", function (req, res, next) {
   client.write("7");
   res.send("true");
 });
+
 app.delete("/playerListDelete", function (req, res, next) {
   //재생목록 삭제
   console.log(req.body.data, playerListXml); //배열

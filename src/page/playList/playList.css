@@ -79,3 +79,10 @@
   width: 100vw;
   padding: 10px 0px;
 }
+.reviseIndex {
+  border: none;
+  width: 30px;
+  font-size: 13px;
+  outline: none;
+  text-align: center;
+}

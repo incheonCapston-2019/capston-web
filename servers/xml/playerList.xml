@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <scriptList>
   <script>
-    <title>hansel</title>
-    <title>kong</title>
-    <title>test</title>
     <title>tree</title>
+    <title>test</title>
+    <title>kong</title>
+    <title>hansel</title>
   </script>
 </scriptList>
